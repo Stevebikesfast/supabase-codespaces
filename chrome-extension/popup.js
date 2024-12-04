@@ -1,12 +1,9 @@
-import { SUPABASE_CONFIG } from './config.js';
-import { supabaseService } from './supabase.js';
-
 document.addEventListener('DOMContentLoaded', async () => {
   const statusDiv = document.getElementById('status');
 
   try {
     // Test Supabase connection by attempting to fetch OpenAI key
-    const key = await supabaseService.fetchOpenAIKey();
+    const key = await window.supabaseService.fetchOpenAIKey();
     
     statusDiv.textContent = 'Successfully connected to Supabase!';
     statusDiv.className = 'success';

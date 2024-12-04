@@ -1,6 +1,3 @@
-// Import Supabase client from CDN
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
 class SupabaseService {
   constructor() {
     this.client = null;
@@ -9,7 +6,7 @@ class SupabaseService {
 
   initClient() {
     try {
-      this.client = createClient(
+      this.client = supabase.createClient(
         SUPABASE_CONFIG.SUPABASE_URL,
         SUPABASE_CONFIG.SUPABASE_ANON_KEY
       );
@@ -35,5 +32,5 @@ class SupabaseService {
   }
 }
 
-// Export the singleton instance
-export const supabaseService = new SupabaseService();
+// Create global instance
+window.supabaseService = new SupabaseService();
