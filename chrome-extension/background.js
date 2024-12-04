@@ -1,16 +1,3 @@
-// Import Supabase client
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client
-const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
-const SUPABASE_ANON_KEY = 'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log('Supabase client initialized');
-
-// OpenAI key storage
-let openaiKey = null;
-
 // Assistant IDs mapping
 const ASSISTANTS = {
   'David': 'ZfHROr8g5jAEZA3HgtpBd4VT',
@@ -21,88 +8,93 @@ const ASSISTANTS = {
   'Alex': 'SEpK5PwswVJmYKIObjwiYttw'
 };
 
-// Fetch OpenAI key from Supabase
+// Supabase configuration
+const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
+const SUPABASE_ANON_KEY = 'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
+
+// Initialize Supabase client
+let supabaseClient = null;
+let openaiKey = null;
+
+// Function to initialize Supabase client
+async function initSupabase() {
+  if (!supabaseClient) {
+    console.log('Initializing Supabase client...');
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase client initialized');
+  }
+  return supabaseClient;
+}
+
+// Function to fetch OpenAI key from settings table
 async function fetchOpenAIKey() {
   try {
-    console.log('Fetching OpenAI key from Supabase...');
-    const { data, error } = await supabase
+    console.log('Fetching OpenAI key from settings table...');
+    const client = await initSupabase();
+    const { data, error } = await client
       .from('settings')
       .select('key_value')
       .eq('key_name', 'openai_project_key')
       .single();
 
     if (error) {
-      console.error('Supabase query error:', error);
+      console.error('Error fetching OpenAI key:', error);
       throw error;
     }
-    
+
     if (!data) {
-      console.error('No OpenAI key found in settings');
+      console.error('No OpenAI key found in settings table');
       throw new Error('OpenAI key not found');
     }
 
-    console.log('Successfully retrieved OpenAI key');
     openaiKey = data.key_value;
+    console.log('Successfully retrieved OpenAI key');
     return openaiKey;
   } catch (error) {
-    console.error('Error fetching OpenAI key:', error);
-    return null;
+    console.error('Error in fetchOpenAIKey:', error);
+    throw error;
   }
 }
 
-// Make OpenAI API call
+// Function to make OpenAI API call
 async function makeOpenAICall(assistantId, userMessage) {
-  console.log('Making OpenAI API call for assistant:', assistantId);
-  
-  if (!openaiKey) {
-    console.log('No OpenAI key found, fetching...');
-    await fetchOpenAIKey();
-  }
-
-  if (!openaiKey) {
-    throw new Error('OpenAI key is missing. Cannot make API call.');
-  }
-
   try {
-    console.log('Sending request to OpenAI API...');
+    if (!openaiKey) {
+      await fetchOpenAIKey();
+    }
+
+    console.log('Making OpenAI API call for assistant:', assistantId);
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${openaiKey}`,
+        'Authorization': `Bearer ${openaiKey}`
       },
       body: JSON.stringify({
         model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: `You are assistant ${assistantId}. Please help the user with their query.`,
+            content: `You are assistant ${assistantId}. Please help the user with their query.`
           },
           {
             role: 'user',
-            content: userMessage,
-          },
-        ],
-      }),
+            content: userMessage
+          }
+        ]
+      })
     });
 
     const data = await response.json();
     console.log('OpenAI API response:', data);
 
     if (data.error) {
-      console.error('OpenAI API error:', data.error);
       throw new Error(data.error.message);
     }
 
-    const messageContent = data.choices[0]?.message?.content;
-    if (!messageContent) {
-      console.error('No message content in OpenAI response');
-      throw new Error('No response from assistant');
-    }
-
-    return messageContent;
+    return data.choices[0]?.message?.content || 'No response from assistant';
   } catch (error) {
-    console.error('Error making OpenAI call:', error);
+    console.error('Error in makeOpenAICall:', error);
     throw error;
   }
 }

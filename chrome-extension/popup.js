@@ -83,5 +83,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initial status
-  showStatus('Ready to chat!');
+  showStatus('Select an assistant and start chatting!');
 });

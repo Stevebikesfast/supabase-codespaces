@@ -9,9 +9,7 @@
     "128": "icons/icon128.svg"
   },
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
@@ -30,6 +28,6 @@
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com;"
+    "extension_pages": "script-src 'self' https://cdn.jsdelivr.net; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com;"
   }
 }
