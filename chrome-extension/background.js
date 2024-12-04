@@ -1,7 +1,14 @@
-// Initialize Supabase client
-let supabaseClient = null;
+// Import Supabase client
+import { createClient } from '@supabase/supabase-js';
 
-// Initialize OpenAI client
+// Initialize Supabase client
+const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
+const SUPABASE_ANON_KEY = 'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('Supabase client initialized');
+
+// OpenAI key storage
 let openaiKey = null;
 
 // Assistant IDs mapping
@@ -14,69 +21,86 @@ const ASSISTANTS = {
   'Alex': 'SEpK5PwswVJmYKIObjwiYttw'
 };
 
-// Initialize Supabase client
-async function initSupabase() {
-  if (!supabaseClient) {
-    const { createClient } = supabase;
-    supabaseClient = createClient(
-      'https://gfahskcoysrpfkjcyrpu.supabase.co',
-      'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA'
-    );
-  }
-  return supabaseClient;
-}
-
 // Fetch OpenAI key from Supabase
 async function fetchOpenAIKey() {
   try {
-    const supabase = await initSupabase();
+    console.log('Fetching OpenAI key from Supabase...');
     const { data, error } = await supabase
       .from('settings')
-      .select('value')
+      .select('key_value')
       .eq('key_name', 'openai_project_key')
       .single();
 
-    if (error) throw error;
-    if (!data) throw new Error('OpenAI key not found');
+    if (error) {
+      console.error('Supabase query error:', error);
+      throw error;
+    }
+    
+    if (!data) {
+      console.error('No OpenAI key found in settings');
+      throw new Error('OpenAI key not found');
+    }
 
-    openaiKey = data.value;
-    return true;
+    console.log('Successfully retrieved OpenAI key');
+    openaiKey = data.key_value;
+    return openaiKey;
   } catch (error) {
     console.error('Error fetching OpenAI key:', error);
-    return false;
+    return null;
   }
 }
 
 // Make OpenAI API call
 async function makeOpenAICall(assistantId, userMessage) {
+  console.log('Making OpenAI API call for assistant:', assistantId);
+  
   if (!openaiKey) {
+    console.log('No OpenAI key found, fetching...');
     await fetchOpenAIKey();
   }
 
+  if (!openaiKey) {
+    throw new Error('OpenAI key is missing. Cannot make API call.');
+  }
+
   try {
+    console.log('Sending request to OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${openaiKey}`
+        'Authorization': `Bearer ${openaiKey}`,
       },
       body: JSON.stringify({
         model: 'gpt-4',
         messages: [
           {
             role: 'system',
-            content: `You are assistant ${assistantId}. Please help the user with their query.`
+            content: `You are assistant ${assistantId}. Please help the user with their query.`,
           },
           {
             role: 'user',
-            content: userMessage
-          }
-        ]
-      })
+            content: userMessage,
+          },
+        ],
+      }),
     });
 
     const data = await response.json();
-    return data.choices[0]?.message?.content || 'No response from assistant';
+    console.log('OpenAI API response:', data);
+
+    if (data.error) {
+      console.error('OpenAI API error:', data.error);
+      throw new Error(data.error.message);
+    }
+
+    const messageContent = data.choices[0]?.message?.content;
+    if (!messageContent) {
+      console.error('No message content in OpenAI response');
+      throw new Error('No response from assistant');
+    }
+
+    return messageContent;
   } catch (error) {
     console.error('Error making OpenAI call:', error);
     throw error;
@@ -85,14 +109,24 @@ async function makeOpenAICall(assistantId, userMessage) {
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('Received message:', request);
+
   if (request.type === 'GET_ASSISTANTS') {
+    console.log('Sending assistants list');
     sendResponse({ assistants: Object.keys(ASSISTANTS) });
   }
   
   if (request.type === 'SEND_MESSAGE') {
+    console.log('Processing message for assistant:', request.assistant);
     makeOpenAICall(ASSISTANTS[request.assistant], request.message)
-      .then(response => sendResponse({ success: true, response }))
-      .catch(error => sendResponse({ success: false, error: error.message }));
+      .then(response => {
+        console.log('Successfully got response from OpenAI');
+        sendResponse({ success: true, response });
+      })
+      .catch(error => {
+        console.error('Error processing message:', error);
+        sendResponse({ success: false, error: error.message });
+      });
     return true; // Will respond asynchronously
   }
 });
