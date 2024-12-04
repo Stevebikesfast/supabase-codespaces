@@ -3,17 +3,27 @@
 <head>
   <title>AI Assistants</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       width: 800px;
+      height: 600px;
       padding: 20px;
       font-family: Arial, sans-serif;
       margin: 0;
       background: #f8f9fa;
+      overflow: hidden;
     }
 
     .container {
       width: 760px;
+      height: calc(100% - 40px);
       margin: 0 auto;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .toggle-container {
@@ -22,6 +32,11 @@
       justify-content: flex-end;
       margin-bottom: 20px;
       gap: 10px;
+      position: sticky;
+      top: 0;
+      background: #f8f9fa;
+      z-index: 10;
+      padding: 10px 0;
     }
 
     .toggle-label {
@@ -34,6 +49,11 @@
       margin-bottom: 30px;
       text-align: center;
       font-size: 24px;
+      position: sticky;
+      top: 50px;
+      background: #f8f9fa;
+      padding: 10px 0;
+      z-index: 10;
     }
 
     .assistants-grid {
@@ -53,6 +73,8 @@
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
     }
 
     .assistant-card:hover {
@@ -83,10 +105,13 @@
       height: 80px;
       border-radius: 50%;
       object-fit: cover;
+      flex-shrink: 0;
     }
 
     .assistant-info {
       flex: 1;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .assistant-name {
@@ -94,12 +119,18 @@
       font-weight: bold;
       margin: 0 0 5px 0;
       color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .assistant-title {
       font-size: 14px;
       color: #666;
       margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .assistant-description {
@@ -107,6 +138,10 @@
       color: #888;
       margin: 5px 0 0 0;
       line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     /* Profile Page Styles */
@@ -115,6 +150,8 @@
       border-radius: 12px;
       padding: 30px;
       margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
     }
 
     .profile-content {
@@ -128,16 +165,23 @@
       height: 80px;
       border-radius: 50%;
       object-fit: cover;
+      flex-shrink: 0;
     }
 
     .profile-details {
       flex: 1;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .profile-bio {
       color: #666;
       line-height: 1.6;
       margin-top: 10px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
 
     .tasks-grid {
@@ -153,6 +197,8 @@
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
     }
 
     .task-card:hover {
@@ -165,28 +211,43 @@
       font-weight: bold;
       margin: 0 0 10px 0;
       color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .task-description {
       font-size: 14px;
       color: #666;
       margin: 0;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     /* Work Interface Styles */
     #task-title {
       margin-bottom: 10px;
       color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .task-description-text {
       color: #666;
       font-size: 14px;
       margin-bottom: 20px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     .input-area {
       margin-bottom: 20px;
+      position: relative;
     }
 
     textarea {
@@ -199,6 +260,8 @@
       font-family: inherit;
       font-size: 14px;
       margin-bottom: 10px;
+      box-sizing: border-box;
+      max-height: 300px;
     }
 
     button {
@@ -210,6 +273,10 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
     }
 
     button:hover {
@@ -223,6 +290,8 @@
       margin-top: 20px;
       position: relative;
       min-height: 100px;
+      max-height: calc(100vh - 500px);
+      overflow-y: auto;
     }
 
     .copy-button {
@@ -233,6 +302,7 @@
       color: #666;
       padding: 5px 10px;
       font-size: 12px;
+      z-index: 1;
     }
 
     .back-button {
@@ -240,6 +310,15 @@
       color: #666;
       border: 1px solid #ddd;
       margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .back-button::before {
+      content: "←";
+      margin-right: 8px;
+      font-size: 16px;
     }
 
     .back-button:hover {
@@ -255,6 +334,13 @@
 
     .hidden {
       display: none !important;
+    }
+
+    #response {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+      padding-right: 60px;
     }
   </style>
 </head>
@@ -273,7 +359,7 @@
       <div class="assistants-grid">
         <!-- David Kumar -->
         <div class="assistant-card" data-assistant="david">
-          <img src="https://ui-avatars.com/api/?name=David+Kumar&background=3ECF8E&color=fff&size=80" alt="David Kumar" class="profile-pic">
+          <img src="Assistant-Profile/david-kumar.png" alt="David Kumar" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">David Kumar</h2>
             <p class="assistant-title">Extension Project & QA Engineer</p>
@@ -283,7 +369,7 @@
         
         <!-- James Morrison -->
         <div class="assistant-card" data-assistant="james">
-          <img src="https://ui-avatars.com/api/?name=James+Morrison&background=3ECF8E&color=fff&size=80" alt="James Morrison" class="profile-pic">
+          <img src="Assistant-Profile/james-morrison.png" alt="James Morrison" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">James Morrison</h2>
             <p class="assistant-title">Extension Monetization Strategist</p>
@@ -293,7 +379,7 @@
 
         <!-- Dr. Maya Patel -->
         <div class="assistant-card" data-assistant="maya">
-          <img src="https://ui-avatars.com/api/?name=Maya+Patel&background=3ECF8E&color=fff&size=80" alt="Maya Patel" class="profile-pic">
+          <img src="Assistant-Profile/dr-maya-patel.png" alt="Maya Patel" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">Dr. Maya Patel</h2>
             <p class="assistant-title">AI Integration Architect</p>
@@ -303,7 +389,7 @@
 
         <!-- Marcus Thompson -->
         <div class="assistant-card" data-assistant="marcus">
-          <img src="https://ui-avatars.com/api/?name=Marcus+Thompson&background=3ECF8E&color=fff&size=80" alt="Marcus Thompson" class="profile-pic">
+          <img src="Assistant-Profile/marcus-thompson.png" alt="Marcus Thompson" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">Marcus Thompson</h2>
             <p class="assistant-title">Chrome Store Launch Strategist</p>
@@ -313,7 +399,7 @@
 
         <!-- Dr. Sarah Peterson -->
         <div class="assistant-card" data-assistant="sarah">
-          <img src="https://ui-avatars.com/api/?name=Sarah+Peterson&background=3ECF8E&color=fff&size=80" alt="Sarah Peterson" class="profile-pic">
+          <img src="Assistant-Profile/dr-sarah-peterson.png" alt="Sarah Peterson" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">Dr. Sarah Peterson</h2>
             <p class="assistant-title">Extension Architecture Specialist</p>
@@ -323,7 +409,7 @@
 
         <!-- Alex Chen -->
         <div class="assistant-card" data-assistant="alex">
-          <img src="https://ui-avatars.com/api/?name=Alex+Chen&background=3ECF8E&color=fff&size=80" alt="Alex Chen" class="profile-pic">
+          <img src="Assistant-Profile/alex-chen.png" alt="Alex Chen" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">Alex Chen</h2>
             <p class="assistant-title">Visual Design Architect</p>
@@ -335,7 +421,7 @@
 
     <!-- Profile View -->
     <div id="profile-view" class="hidden">
-      <button class="back-button" id="back-to-assistants">← Back to Assistants</button>
+      <button class="back-button" id="back-to-assistants">Back to Assistants</button>
       <div class="profile-header">
         <div class="profile-content">
           <img src="" alt="" class="profile-image" id="profile-image">
@@ -353,7 +439,7 @@
 
     <!-- Work Interface -->
     <div id="work-interface" class="hidden">
-      <button class="back-button" id="back-to-tasks">← Back to Tasks</button>
+      <button class="back-button" id="back-to-tasks">Back to Tasks</button>
       <h2 id="task-title">Task Name</h2>
       <p class="task-description-text">List your extension features, available timeline, team resources, and any technical dependencies</p>
       <div class="input-area">
