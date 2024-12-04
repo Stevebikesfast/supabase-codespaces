@@ -30,13 +30,13 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       gap: 10px;
       position: sticky;
       top: 0;
       background: #f8f9fa;
       z-index: 10;
-      padding: 10px 0;
+      padding: 5px 0;
     }
 
     .toggle-label {
@@ -46,13 +46,13 @@
 
     h1 {
       color: #333;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       text-align: center;
       font-size: 24px;
       position: sticky;
-      top: 50px;
+      top: 40px;
       background: #f8f9fa;
-      padding: 10px 0;
+      padding: 5px 0;
       z-index: 10;
     }
 
@@ -148,21 +148,22 @@
     .profile-header {
       background: white;
       border-radius: 12px;
-      padding: 30px;
-      margin-bottom: 30px;
+      padding: 15px;
+      margin-bottom: 15px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .profile-content {
       display: flex;
-      gap: 30px;
-      align-items: flex-start;
+      gap: 15px;
+      align-items: center;
     }
 
     .profile-image {
-      width: 80px;
-      height: 80px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       object-fit: cover;
       flex-shrink: 0;
@@ -176,24 +177,30 @@
 
     .profile-bio {
       color: #666;
-      line-height: 1.6;
-      margin-top: 10px;
+      line-height: 1.4;
+      margin-top: 5px;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      font-size: 13px;
     }
 
     .tasks-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      gap: 12px;
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+      padding-right: 5px;
+      margin: 0 -5px;
+      padding: 0 5px;
     }
 
     .task-card {
       background: white;
       border-radius: 12px;
-      padding: 20px;
+      padding: 12px;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -207,9 +214,9 @@
     }
 
     .task-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
-      margin: 0 0 10px 0;
+      margin: 0 0 6px 0;
       color: #333;
       white-space: nowrap;
       overflow: hidden;
@@ -217,13 +224,14 @@
     }
 
     .task-description {
-      font-size: 14px;
+      font-size: 13px;
       color: #666;
       margin: 0;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      line-height: 1.4;
     }
 
     /* Work Interface Styles */
@@ -309,16 +317,21 @@
       background: #f8f9fa;
       color: #666;
       border: 1px solid #ddd;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       position: sticky;
       top: 0;
       z-index: 10;
+      font-size: 14px;
+      padding: 8px 16px;
     }
 
     .back-button::before {
-      content: "←";
+      content: "⟵";
       margin-right: 8px;
-      font-size: 16px;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: -1px;
     }
 
     .back-button:hover {
