@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Supabase Chrome Extension",
+  "name": "AI Assistant Chrome Extension",
   "version": "1.0",
-  "description": "Chrome extension with Supabase integration",
+  "description": "Chrome extension for interacting with OpenAI assistants via Supabase",
   "icons": {
     "16": "icons/icon16.svg",
     "48": "icons/icon48.svg",
@@ -12,8 +12,13 @@
     "storage"
   ],
   "host_permissions": [
-    "https://gfahskcoysrpfkjcyrpu.supabase.co/*"
+    "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
+    "https://api.openai.com/*"
   ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -23,6 +28,6 @@
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com;"
   }
 }

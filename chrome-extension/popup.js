@@ -1,46 +1,87 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const testButton = document.getElementById('testButton');
+  const assistantSelect = document.getElementById('assistant');
+  const chatMessages = document.getElementById('chat-messages');
+  const userInput = document.getElementById('user-input');
+  const sendButton = document.getElementById('send-button');
   const statusDiv = document.getElementById('status');
 
-  console.log('Popup initialized, setting up test button handler');
+  // Load assistants into dropdown
+  chrome.runtime.sendMessage({ type: 'GET_ASSISTANTS' }, response => {
+    assistantSelect.innerHTML = response.assistants
+      .map(name => `<option value="${name}">${name}</option>`)
+      .join('');
+  });
 
-  testButton.addEventListener('click', async () => {
-    console.log('Test button clicked, attempting to get OpenAI key...');
-    statusDiv.textContent = 'Testing connection...';
-    statusDiv.className = '';
-    
-    try {
-      const key = await window.supabaseService.getOpenAIKey();
-      
-      const message = 'Successfully retrieved OpenAI key!';
-      statusDiv.textContent = message;
-      statusDiv.className = 'success';
-      
-      console.log('Success:', {
-        message: message,
-        keyLength: key ? key.length : 0,
-        hasKey: !!key
-      });
-    } catch (error) {
-      console.error('Error in popup handler:', {
-        error: error,
-        message: error.message,
-        code: error?.code,
-        details: error?.details,
-        hint: error?.hint,
-        stack: error.stack
-      });
+  // Add message to chat
+  function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
+    messageDiv.textContent = content;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 
-      // Construct detailed error message
-      let errorMessage = 'Error: ';
-      if (error.message) errorMessage += error.message;
-      if (error.details) errorMessage += ` (${error.details})`;
-      if (error.hint) errorMessage += ` - ${error.hint}`;
-      
-      statusDiv.textContent = errorMessage;
-      statusDiv.className = 'error';
+  // Show status message
+  function showStatus(message, isError = false) {
+    statusDiv.textContent = message;
+    statusDiv.className = isError ? 'error' : 'success';
+  }
+
+  // Handle send message
+  async function handleSend() {
+    const message = userInput.value.trim();
+    const selectedAssistant = assistantSelect.value;
+
+    if (!message) {
+      showStatus('Please enter a message', true);
+      return;
+    }
+
+    if (!selectedAssistant) {
+      showStatus('Please select an assistant', true);
+      return;
+    }
+
+    // Disable input while processing
+    userInput.disabled = true;
+    sendButton.disabled = true;
+    showStatus('Sending message...');
+
+    // Add user message to chat
+    addMessage(message, true);
+
+    // Send message to background script
+    chrome.runtime.sendMessage({
+      type: 'SEND_MESSAGE',
+      assistant: selectedAssistant,
+      message: message
+    }, response => {
+      if (response.success) {
+        // Add assistant response to chat
+        addMessage(response.response);
+        showStatus('Message sent successfully');
+      } else {
+        showStatus(`Error: ${response.error}`, true);
+      }
+
+      // Re-enable input
+      userInput.disabled = false;
+      sendButton.disabled = false;
+      userInput.value = '';
+      userInput.focus();
+    });
+  }
+
+  // Event listeners
+  sendButton.addEventListener('click', handleSend);
+  
+  userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   });
 
-  console.log('Popup initialization complete');
+  // Initial status
+  showStatus('Ready to chat!');
 });

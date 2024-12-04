@@ -1,23 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Supabase Extension</title>
+  <title>AI Assistant</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="popup.css">
-  <!-- Load Supabase client first -->
-  <script src="supabase-js.js"></script>
-  <!-- Load our configuration -->
-  <script src="config.js"></script>
-  <!-- Load our Supabase service -->
-  <script src="supabase.js"></script>
-  <!-- Load popup logic last -->
-  <script src="popup.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Supabase Extension</h1>
-    <button id="testButton">Test Connection</button>
-    <div id="status"></div>
+    <h1>AI Assistant</h1>
+    
+    <!-- Assistant Selection -->
+    <div class="assistant-selection">
+      <label for="assistant">Select Assistant:</label>
+      <select id="assistant">
+        <option value="">Loading assistants...</option>
+      </select>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="chat-container">
+      <div id="chat-messages" class="chat-messages">
+        <!-- Messages will be inserted here -->
+      </div>
+      
+      <div class="input-container">
+        <textarea id="user-input" placeholder="Type your message here..." rows="3"></textarea>
+        <button id="send-button">Send</button>
+      </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="status" class="status"></div>
   </div>
+
+  <!-- Load Scripts -->
+  <script src="supabase-js.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
