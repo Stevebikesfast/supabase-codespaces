@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Supabase OpenAI Extension",
+  "name": "Supabase Test Extension",
   "version": "1.0",
-  "description": "Test connection to Supabase and OpenAI",
-  "permissions": ["storage"],
+  "description": "Test connection to Supabase REST API",
+  "permissions": [],
   "host_permissions": [
-    "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
-    "https://api.openai.com/*"
+    "https://gfahskcoysrpfkjcyrpu.supabase.co/*"
   ],
   "action": {
     "default_popup": "popup.html"
