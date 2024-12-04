@@ -29,6 +29,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: bold;
     }
     button:hover {
       background-color: #2EBF7E;
@@ -36,6 +37,12 @@
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+    #status {
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+      font-family: monospace;
     }
     #result {
       margin-top: 10px;
@@ -45,19 +52,26 @@
       min-height: 100px;
       white-space: pre-wrap;
       word-wrap: break-word;
+      background-color: white;
     }
-    .status {
-      color: #666;
-      font-style: italic;
-      margin-top: 5px;
+    .header {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <textarea id="testMessage" placeholder="Enter a test message for the AI assistant...">Hello, can you help me test if this connection is working?</textarea>
-    <button id="testButton">Test Connection & Send Message</button>
-    <div class="status" id="status">Ready to test...</div>
+    <div class="header">Test Message:</div>
+    <textarea id="testMessage" placeholder="Enter a test message...">Hello, can you help me test if this connection is working?</textarea>
+    
+    <button id="testButton">Run Connection Test</button>
+    
+    <div class="header">Status:</div>
+    <div id="status">Ready to test connection...</div>
+    
+    <div class="header">Assistant Response:</div>
     <div id="result"></div>
   </div>
   <script src="popup.js"></script>

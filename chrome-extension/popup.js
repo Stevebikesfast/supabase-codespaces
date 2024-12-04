@@ -7,8 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
     const SUPABASE_KEY = 'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
 
+    function updateStatus(message, isError = false) {
+        statusDiv.textContent = message;
+        statusDiv.style.color = isError ? 'red' : 'black';
+        console.log(`Status: ${message}`);
+    }
+
     async function fetchOpenAIKey() {
-        statusDiv.textContent = 'Fetching OpenAI key from Supabase...';
+        updateStatus('Step 1/3: Fetching OpenAI key from Supabase...');
         
         const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key_name=eq.openai_project_key`, {
             headers: {
@@ -22,17 +28,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const data = await response.json();
-        console.log('Supabase response:', data);
+        console.log('Supabase Response:', {
+            success: true,
+            data: data,
+            message: 'Successfully retrieved data from Supabase'
+        });
 
         if (!data || data.length === 0) {
             throw new Error('No OpenAI key found in settings table');
         }
 
+        updateStatus('✓ Step 1/3: Successfully retrieved OpenAI key from Supabase');
         return data[0].key_value;
     }
 
     async function makeOpenAIRequest(openaiKey, message) {
-        statusDiv.textContent = 'Sending message to OpenAI...';
+        updateStatus('Step 2/3: Sending message to OpenAI...');
         
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -61,9 +72,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const data = await response.json();
-        console.log('OpenAI response:', data);
+        console.log('OpenAI Response:', {
+            success: true,
+            data: data,
+            message: 'Successfully received response from OpenAI'
+        });
 
+        updateStatus('✓ Step 2/3: Successfully received response from OpenAI');
         return data.choices[0]?.message?.content || 'No response from assistant';
+    }
+
+    async function displayResponse(response) {
+        updateStatus('Step 3/3: Displaying response...');
+        resultDiv.textContent = response;
+        updateStatus('✓ Step 3/3: All steps completed successfully!');
+        
+        console.log('Test Summary:', {
+            supabaseConnection: '✓ Success',
+            openAIKeyRetrieval: '✓ Success',
+            openAIResponse: '✓ Success',
+            responseDisplayed: '✓ Success'
+        });
     }
 
     testButton.addEventListener('click', async () => {
@@ -73,20 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Step 1: Fetch OpenAI key from Supabase
             const openaiKey = await fetchOpenAIKey();
-            console.log('Successfully retrieved OpenAI key');
 
             // Step 2: Make OpenAI API call
             const message = testMessage.value.trim() || 'Hello, can you help me test if this connection is working?';
             const response = await makeOpenAIRequest(openaiKey, message);
 
             // Step 3: Display result
-            statusDiv.textContent = 'Test completed successfully!';
-            resultDiv.textContent = response;
+            await displayResponse(response);
 
         } catch (error) {
-            statusDiv.textContent = 'Error occurred!';
-            resultDiv.textContent = 'Error: ' + error.message;
-            console.error('Full error:', error);
+            updateStatus(`Error: ${error.message}`, true);
+            console.error('Test Failed:', {
+                error: error,
+                message: error.message,
+                stack: error.stack
+            });
         } finally {
             testButton.disabled = false;
         }
