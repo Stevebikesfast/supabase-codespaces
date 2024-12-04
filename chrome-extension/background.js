@@ -1,11 +1,13 @@
-// Import the Supabase client library
-import { createClient } from '@supabase/supabase-js';
+// Import Supabase client from local file
+importScripts('libs/supabase.js');
 
 // Initialize the Supabase client
-const supabase = createClient(
+const supabase = supabaseJs.createClient(
   'https://gfahskcoysrpfkjcyrpu.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA'
 );
+
+console.log('Supabase client initialized in background script');
 
 async function fetchOpenAIKey() {
   try {
