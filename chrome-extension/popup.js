@@ -26,31 +26,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const settings = await settingsResponse.json();
-            resultDiv.textContent = 'Supabase Response:\n' + JSON.stringify(settings, null, 2);
 
-            // Log full response for debugging
-            console.log('Raw Supabase Response:', {
-                status: settingsResponse.status,
-                headers: Object.fromEntries(settingsResponse.headers.entries()),
-                data: settings
-            });
-
+            // Verify Supabase data
             if (!settings || settings.length === 0) {
                 throw new Error('No data found in settings table');
             }
 
-            // Show what we found
-            statusDiv.textContent = `Found ${settings.length} rows in settings table. Checking for OpenAI key...`;
-
-            // Look for OpenAI key
             const openaiSetting = settings.find(s => s.key_name === 'openai_project_key');
             if (!openaiSetting) {
                 throw new Error('OpenAI key not found in settings');
             }
 
-            statusDiv.textContent = 'Found OpenAI key. Testing OpenAI connection...';
+            statusDiv.textContent = '✓ Supabase: Successfully retrieved OpenAI key';
+            
+            // Show Supabase results
+            resultDiv.innerHTML = '<strong>Supabase Data:</strong>\n' + 
+                `<pre>${JSON.stringify(settings, null, 2)}</pre>`;
 
             // Test OpenAI connection
+            statusDiv.textContent = '✓ Supabase Success - Testing OpenAI...';
+            
             const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -73,17 +68,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const openaiResult = await openaiResponse.json();
             
-            // Show both results
-            resultDiv.textContent = 
-                'Supabase Data:\n' + 
-                JSON.stringify(settings, null, 2) + 
-                '\n\nOpenAI Response:\n' + 
-                JSON.stringify(openaiResult, null, 2);
+            // Verify OpenAI response
+            if (!openaiResult.choices || !openaiResult.choices[0]?.message?.content) {
+                throw new Error('Invalid OpenAI response format');
+            }
 
-            statusDiv.textContent = 'Test Complete - Check results below';
+            // Show OpenAI results
+            resultDiv.innerHTML += '\n<strong>OpenAI Response:</strong>\n' + 
+                `<pre>${JSON.stringify(openaiResult, null, 2)}</pre>`;
+
+            // Show final verification
+            statusDiv.innerHTML = `
+                <div style="color: #155724; background-color: #d4edda; padding: 10px; border-radius: 4px;">
+                    ✓ Connections Verified:
+                    <br>1. Supabase: Successfully accessed settings table
+                    <br>2. OpenAI Key: Retrieved from settings
+                    <br>3. OpenAI API: Successful test response
+                </div>
+            `;
 
         } catch (error) {
-            statusDiv.textContent = `Error: ${error.message}`;
+            statusDiv.innerHTML = `
+                <div style="color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 4px;">
+                    ✗ Error: ${error.message}
+                </div>
+            `;
             console.error('Full error:', error);
         } finally {
             testButton.disabled = false;
