@@ -16,6 +16,19 @@
       margin: 0 auto;
     }
 
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      color: #666;
+    }
+
     h1 {
       color: #333;
       margin-bottom: 30px;
@@ -87,6 +100,13 @@
       font-size: 14px;
       color: #666;
       margin: 0;
+    }
+
+    .assistant-description {
+      font-size: 12px;
+      color: #888;
+      margin: 5px 0 0 0;
+      line-height: 1.4;
     }
 
     /* Profile Page Styles */
@@ -229,53 +249,74 @@
 </head>
 <body>
   <div class="container">
+    <!-- Development Toggle -->
+    <div class="toggle-container">
+      <span class="toggle-label">Development Mode:</span>
+      <input type="checkbox" id="dev-toggle" checked>
+      <span class="toggle-label">Free/Paid Toggle</span>
+    </div>
+
     <!-- Main Grid View -->
     <div id="assistants-view">
       <h1>AI Assistants</h1>
       <div class="assistants-grid">
-        <!-- James Morrison - Unlocked -->
+        <!-- David Kumar -->
+        <div class="assistant-card" data-assistant="david">
+          <img src="https://ui-avatars.com/api/?name=David+Kumar&background=3ECF8E&color=fff" alt="David Kumar" class="profile-pic">
+          <div class="assistant-info">
+            <h2 class="assistant-name">David Kumar</h2>
+            <p class="assistant-title">Extension Project & QA Engineer</p>
+            <p class="assistant-description">Extension development expert with 10+ years experience. Successfully guided 200+ extension launches.</p>
+          </div>
+        </div>
+        
+        <!-- James Morrison -->
         <div class="assistant-card" data-assistant="james">
           <img src="https://ui-avatars.com/api/?name=James+Morrison&background=3ECF8E&color=fff" alt="James Morrison" class="profile-pic">
           <div class="assistant-info">
             <h2 class="assistant-name">James Morrison</h2>
             <p class="assistant-title">Extension Monetization Strategist</p>
+            <p class="assistant-description">MBA-qualified strategist who has generated over $2M in extension revenue.</p>
           </div>
         </div>
-        
-        <!-- Other Assistants - Locked -->
-        <div class="assistant-card locked">
-          <img src="https://ui-avatars.com/api/?name=Sarah+Chen&background=6C757D&color=fff" alt="Sarah Chen" class="profile-pic">
+
+        <!-- Dr. Maya Patel -->
+        <div class="assistant-card" data-assistant="maya">
+          <img src="https://ui-avatars.com/api/?name=Maya+Patel&background=3ECF8E&color=fff" alt="Maya Patel" class="profile-pic">
           <div class="assistant-info">
-            <h2 class="assistant-name">Sarah Chen</h2>
-            <p class="assistant-title">Growth Marketing Specialist</p>
+            <h2 class="assistant-name">Dr. Maya Patel</h2>
+            <p class="assistant-title">AI Integration Architect</p>
+            <p class="assistant-description">PhD in AI with extensive experience in prompt engineering and extension development.</p>
           </div>
         </div>
-        <div class="assistant-card locked">
-          <img src="https://ui-avatars.com/api/?name=David+Kumar&background=6C757D&color=fff" alt="David Kumar" class="profile-pic">
+
+        <!-- Marcus Thompson -->
+        <div class="assistant-card" data-assistant="marcus">
+          <img src="https://ui-avatars.com/api/?name=Marcus+Thompson&background=3ECF8E&color=fff" alt="Marcus Thompson" class="profile-pic">
           <div class="assistant-info">
-            <h2 class="assistant-name">David Kumar</h2>
-            <p class="assistant-title">Technical Product Manager</p>
+            <h2 class="assistant-name">Marcus Thompson</h2>
+            <p class="assistant-title">Chrome Store Launch Strategist</p>
+            <p class="assistant-description">10 years of app store optimization experience with 500+ successful launches.</p>
           </div>
         </div>
-        <div class="assistant-card locked">
-          <img src="https://ui-avatars.com/api/?name=Maya+Patel&background=6C757D&color=fff" alt="Maya Patel" class="profile-pic">
+
+        <!-- Dr. Sarah Peterson -->
+        <div class="assistant-card" data-assistant="sarah">
+          <img src="https://ui-avatars.com/api/?name=Sarah+Peterson&background=3ECF8E&color=fff" alt="Sarah Peterson" class="profile-pic">
           <div class="assistant-info">
-            <h2 class="assistant-name">Maya Patel</h2>
-            <p class="assistant-title">UX Research Expert</p>
+            <h2 class="assistant-name">Dr. Sarah Peterson</h2>
+            <p class="assistant-title">Extension Architecture Specialist</p>
+            <p class="assistant-description">PhD in Computer Science with 12 years of Chrome extension development experience.</p>
           </div>
         </div>
-        <div class="assistant-card locked">
-          <img src="https://ui-avatars.com/api/?name=Marcus+Wong&background=6C757D&color=fff" alt="Marcus Wong" class="profile-pic">
+
+        <!-- Alex Chen -->
+        <div class="assistant-card" data-assistant="alex">
+          <img src="https://ui-avatars.com/api/?name=Alex+Chen&background=3ECF8E&color=fff" alt="Alex Chen" class="profile-pic">
           <div class="assistant-info">
-            <h2 class="assistant-name">Marcus Wong</h2>
-            <p class="assistant-title">Developer Relations Lead</p>
-          </div>
-        </div>
-        <div class="assistant-card locked">
-          <img src="https://ui-avatars.com/api/?name=Alex+Rivera&background=6C757D&color=fff" alt="Alex Rivera" class="profile-pic">
-          <div class="assistant-info">
-            <h2 class="assistant-name">Alex Rivera</h2>
-            <p class="assistant-title">Community Growth Manager</p>
+            <h2 class="assistant-name">Alex Chen</h2>
+            <p class="assistant-title">Visual Design Architect</p>
+            <p class="assistant-description">15 years of UI/UX experience specializing in Chrome extensions.</p>
           </div>
         </div>
       </div>
@@ -286,39 +327,16 @@
       <button class="back-button" id="back-to-assistants">← Back to Assistants</button>
       <div class="profile-header">
         <div class="profile-content">
-          <img src="https://ui-avatars.com/api/?name=James+Morrison&background=3ECF8E&color=fff&size=200" alt="James Morrison" class="profile-image">
+          <img src="" alt="" class="profile-image" id="profile-image">
           <div class="profile-details">
-            <h2 class="assistant-name">James Morrison</h2>
-            <p class="assistant-title">Extension Monetization Strategist</p>
-            <p class="profile-bio">Expert in Chrome extension monetization strategies with over 8 years of experience. Specializes in sustainable revenue models, pricing strategies, and user-centric monetization approaches.</p>
+            <h2 class="assistant-name" id="profile-name"></h2>
+            <p class="assistant-title" id="profile-title"></p>
+            <p class="profile-bio" id="profile-bio"></p>
           </div>
         </div>
       </div>
-      <div class="tasks-grid">
-        <div class="task-card" data-task="pricing">
-          <h3 class="task-name">Pricing Strategy</h3>
-          <p class="task-description">Get help determining the optimal pricing model and tiers for your extension.</p>
-        </div>
-        <div class="task-card" data-task="revenue">
-          <h3 class="task-name">Revenue Model Analysis</h3>
-          <p class="task-description">Analyze different revenue models and their potential impact on your extension.</p>
-        </div>
-        <div class="task-card" data-task="market">
-          <h3 class="task-name">Market Research</h3>
-          <p class="task-description">Research competitor pricing and monetization strategies in your niche.</p>
-        </div>
-        <div class="task-card" data-task="features">
-          <h3 class="task-name">Feature Prioritization</h3>
-          <p class="task-description">Identify which features should be free vs premium in your extension.</p>
-        </div>
-        <div class="task-card" data-task="conversion">
-          <h3 class="task-name">Conversion Optimization</h3>
-          <p class="task-description">Optimize your free-to-paid user conversion strategy.</p>
-        </div>
-        <div class="task-card" data-task="growth">
-          <h3 class="task-name">Growth Planning</h3>
-          <p class="task-description">Develop a sustainable growth and monetization roadmap.</p>
-        </div>
+      <div class="tasks-grid" id="tasks-grid">
+        <!-- Tasks will be dynamically populated -->
       </div>
     </div>
 
