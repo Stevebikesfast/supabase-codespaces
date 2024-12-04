@@ -95,7 +95,6 @@
       border-radius: 12px;
       padding: 30px;
       margin-bottom: 30px;
-      display: none;
     }
 
     .profile-content {
@@ -125,7 +124,6 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      display: none;
     }
 
     .task-card {
@@ -156,10 +154,6 @@
     }
 
     /* Work Interface Styles */
-    .work-interface {
-      display: none;
-    }
-
     .input-area {
       margin-bottom: 20px;
     }
@@ -227,6 +221,10 @@
       padding: 20px;
       color: #666;
     }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -284,8 +282,8 @@
     </div>
 
     <!-- Profile View -->
-    <div id="profile-view" style="display: none;">
-      <button class="back-button" onclick="showAssistants()">← Back to Assistants</button>
+    <div id="profile-view" class="hidden">
+      <button class="back-button" id="back-to-assistants">← Back to Assistants</button>
       <div class="profile-header">
         <div class="profile-content">
           <img src="https://ui-avatars.com/api/?name=James+Morrison&background=3ECF8E&color=fff&size=200" alt="James Morrison" class="profile-image">
@@ -297,27 +295,27 @@
         </div>
       </div>
       <div class="tasks-grid">
-        <div class="task-card" onclick="showWorkInterface('pricing')">
+        <div class="task-card" data-task="pricing">
           <h3 class="task-name">Pricing Strategy</h3>
           <p class="task-description">Get help determining the optimal pricing model and tiers for your extension.</p>
         </div>
-        <div class="task-card" onclick="showWorkInterface('revenue')">
+        <div class="task-card" data-task="revenue">
           <h3 class="task-name">Revenue Model Analysis</h3>
           <p class="task-description">Analyze different revenue models and their potential impact on your extension.</p>
         </div>
-        <div class="task-card" onclick="showWorkInterface('market')">
+        <div class="task-card" data-task="market">
           <h3 class="task-name">Market Research</h3>
           <p class="task-description">Research competitor pricing and monetization strategies in your niche.</p>
         </div>
-        <div class="task-card" onclick="showWorkInterface('features')">
+        <div class="task-card" data-task="features">
           <h3 class="task-name">Feature Prioritization</h3>
           <p class="task-description">Identify which features should be free vs premium in your extension.</p>
         </div>
-        <div class="task-card" onclick="showWorkInterface('conversion')">
+        <div class="task-card" data-task="conversion">
           <h3 class="task-name">Conversion Optimization</h3>
           <p class="task-description">Optimize your free-to-paid user conversion strategy.</p>
         </div>
-        <div class="task-card" onclick="showWorkInterface('growth')">
+        <div class="task-card" data-task="growth">
           <h3 class="task-name">Growth Planning</h3>
           <p class="task-description">Develop a sustainable growth and monetization roadmap.</p>
         </div>
@@ -325,16 +323,16 @@
     </div>
 
     <!-- Work Interface -->
-    <div id="work-interface" style="display: none;">
-      <button class="back-button" onclick="showProfile()">← Back to Tasks</button>
+    <div id="work-interface" class="hidden">
+      <button class="back-button" id="back-to-tasks">← Back to Tasks</button>
       <h2 id="task-title">Task Name</h2>
       <div class="input-area">
         <textarea id="user-input" placeholder="Describe your extension and what you'd like help with..."></textarea>
-        <button onclick="submitQuery()">Get Assistance</button>
+        <button id="submit-query">Get Assistance</button>
       </div>
       <div id="loading">Processing your request...</div>
       <div class="response-area">
-        <button class="copy-button" onclick="copyResponse()">Copy</button>
+        <button class="copy-button" id="copy-response">Copy</button>
         <div id="response">Enter your query above and click "Get Assistance" to start.</div>
       </div>
     </div>

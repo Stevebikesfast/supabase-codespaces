@@ -1,23 +1,23 @@
-// Current view state management
+// Current view and task state
 let currentTask = '';
 
 // View management functions
 function showAssistants() {
-    document.getElementById('assistants-view').style.display = 'block';
-    document.getElementById('profile-view').style.display = 'none';
-    document.getElementById('work-interface').style.display = 'none';
+    document.getElementById('assistants-view').classList.remove('hidden');
+    document.getElementById('profile-view').classList.add('hidden');
+    document.getElementById('work-interface').classList.add('hidden');
 }
 
 function showProfile() {
-    document.getElementById('assistants-view').style.display = 'none';
-    document.getElementById('profile-view').style.display = 'block';
-    document.getElementById('work-interface').style.display = 'none';
+    document.getElementById('assistants-view').classList.add('hidden');
+    document.getElementById('profile-view').classList.remove('hidden');
+    document.getElementById('work-interface').classList.add('hidden');
 }
 
 function showWorkInterface(taskType) {
-    document.getElementById('assistants-view').style.display = 'none';
-    document.getElementById('profile-view').style.display = 'none';
-    document.getElementById('work-interface').style.display = 'block';
+    document.getElementById('assistants-view').classList.add('hidden');
+    document.getElementById('profile-view').classList.add('hidden');
+    document.getElementById('work-interface').classList.remove('hidden');
     
     // Update task title
     const taskTitles = {
@@ -42,7 +42,7 @@ async function submitQuery() {
     const userInput = document.getElementById('user-input').value.trim();
     if (!userInput) return;
 
-    const submitButton = document.querySelector('.input-area button');
+    const submitButton = document.getElementById('submit-query');
     const loadingDiv = document.getElementById('loading');
     const responseDiv = document.getElementById('response');
 
@@ -76,8 +76,10 @@ async function submitQuery() {
         }
 
         responseDiv.textContent = response.message;
+        responseDiv.classList.remove('error');
 
     } catch (error) {
+        console.error('Error:', error);
         responseDiv.textContent = `Error: ${error.message}`;
         responseDiv.classList.add('error');
     } finally {
@@ -89,7 +91,7 @@ async function submitQuery() {
 function copyResponse() {
     const responseText = document.getElementById('response').textContent;
     navigator.clipboard.writeText(responseText).then(() => {
-        const copyButton = document.querySelector('.copy-button');
+        const copyButton = document.getElementById('copy-response');
         const originalText = copyButton.textContent;
         copyButton.textContent = 'Copied!';
         setTimeout(() => {
@@ -109,4 +111,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Handle task card clicks
+    const taskCards = document.querySelectorAll('.task-card');
+    taskCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const taskType = this.dataset.task;
+            showWorkInterface(taskType);
+        });
+    });
+
+    // Handle navigation buttons
+    document.getElementById('back-to-assistants').addEventListener('click', showAssistants);
+    document.getElementById('back-to-tasks').addEventListener('click', showProfile);
+
+    // Handle submit and copy buttons
+    document.getElementById('submit-query').addEventListener('click', submitQuery);
+    document.getElementById('copy-response').addEventListener('click', copyResponse);
 });
