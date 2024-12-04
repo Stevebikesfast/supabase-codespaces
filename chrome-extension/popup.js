@@ -7,79 +7,265 @@ const assistants = {
     david: {
         name: "David Kumar",
         title: "Extension Project & QA Engineer",
-        bio: "Extension development expert with 10+ years experience. Successfully guided 200+ extension launches with zero critical post-launch issues.",
+        assistantId: "asst_ZfHROr8g5jAEZA3HgtpBd4VT",
+        bio: "10 years experience, guided 200+ successful extension launches with zero critical post-launch issues",
         tasks: [
-            { name: "Project Roadmap Creator", description: "Creates your extension development plan and timeline", type: "roadmap" },
-            { name: "Test Plan Generator", description: "Builds comprehensive testing strategy for your extension", type: "testing" },
-            { name: "Quality Checklist Manager", description: "Creates quality assurance process for your extension", type: "quality" },
-            { name: "Risk Assessment Expert", description: "Identifies and plans for potential project risks", type: "risks" },
-            { name: "Release Manager", description: "Plans smooth deployment of your extension", type: "release" },
-            { name: "Performance Optimizer", description: "Maximizes extension performance and efficiency", type: "performance" }
+            {
+                name: "Project Roadmap Creator",
+                description: "Creates your extension development plan and timeline",
+                type: "roadmap",
+                workInstructions: "List your extension features, available timeline, team resources, and any technical dependencies"
+            },
+            {
+                name: "Test Plan Generator",
+                description: "Builds comprehensive testing strategy for your extension",
+                type: "testing",
+                workInstructions: "Describe your extension features, critical paths, user scenarios, and performance requirements"
+            },
+            {
+                name: "Quality Checklist Manager",
+                description: "Creates quality assurance process for your extension",
+                type: "quality",
+                workInstructions: "List your quality requirements, critical features, user expectations, and performance targets"
+            },
+            {
+                name: "Risk Assessment Expert",
+                description: "Identifies and plans for potential project risks",
+                type: "risks",
+                workInstructions: "Outline your project scope, critical paths, dependencies, and constraints"
+            },
+            {
+                name: "Release Manager",
+                description: "Plans smooth deployment of your extension",
+                type: "release",
+                workInstructions: "Specify your release scope, dependencies, stakeholders, and timeline"
+            },
+            {
+                name: "Performance Optimizer",
+                description: "Maximizes extension performance and efficiency",
+                type: "performance",
+                workInstructions: "Share your performance metrics, user feedback, resource usage, and speed requirements"
+            }
         ]
     },
     james: {
         name: "James Morrison",
         title: "Extension Monetization Strategist",
-        bio: "MBA-qualified strategist who has generated over $2M in extension revenue. Expert in turning extensions into profitable businesses.",
+        assistantId: "asst_KU36EdfB300bU6thcFGloMC3",
+        bio: "MBA with proven success generating over $2M in extension revenue",
         tasks: [
-            { name: "Revenue Model Designer", description: "Creates profitable business model for your extension", type: "revenue" },
-            { name: "Growth Strategy Planner", description: "Develops sustainable user growth plan", type: "growth" },
-            { name: "Market Analysis Expert", description: "Analyzes market opportunities and competition", type: "market" },
-            { name: "User Acquisition Manager", description: "Plans efficient user acquisition strategy", type: "acquisition" },
-            { name: "Retention Strategist", description: "Maximizes user retention and engagement", type: "retention" },
-            { name: "Partnership Developer", description: "Creates strategic partnership growth plan", type: "partnerships" }
+            {
+                name: "Revenue Model Designer",
+                description: "Creates profitable business model for your extension",
+                type: "revenue",
+                workInstructions: "List your extension features, target market size, user segments, and cost structure"
+            },
+            {
+                name: "Growth Strategy Planner",
+                description: "Develops sustainable user growth plan",
+                type: "growth",
+                workInstructions: "Share your current metrics, growth targets, available resources, and timeline"
+            },
+            {
+                name: "Market Analysis Expert",
+                description: "Analyzes market opportunities",
+                type: "market",
+                workInstructions: "Describe your target market, competitor data, user needs, and market trends"
+            },
+            {
+                name: "User Acquisition Manager",
+                description: "Plans efficient user acquisition strategy",
+                type: "acquisition",
+                workInstructions: "Define your target users, potential acquisition channels, budget, and goals"
+            },
+            {
+                name: "Retention Strategist",
+                description: "Maximizes user retention",
+                type: "retention",
+                workInstructions: "Share your user behavior data, churn points, feature usage, and feedback data"
+            },
+            {
+                name: "Partnership Developer",
+                description: "Creates strategic partnership plan",
+                type: "partnerships",
+                workInstructions: "List desired partner types, integration needs, value proposition, and growth goals"
+            }
         ]
     },
     maya: {
         name: "Dr. Maya Patel",
         title: "AI Integration Architect",
-        bio: "PhD in AI with extensive experience in prompt engineering and extension development. Expert in AI tool integration.",
+        assistantId: "asst_TiwJg7g4ADVOc304Z6btxcSN",
+        bio: "PhD in AI with extensive experience in prompt engineering and extension development",
         tasks: [
-            { name: "Prompt Architecture Designer", description: "Creates effective AI prompts for your extension", type: "prompts" },
-            { name: "AI Integration Engineer", description: "Plans seamless AI service connection", type: "integration" },
-            { name: "Cost Optimization Manager", description: "Optimizes AI usage efficiency", type: "costs" },
-            { name: "Response Handler Builder", description: "Designs AI response processing system", type: "responses" },
-            { name: "AI Security Architect", description: "Creates secure AI implementation plan", type: "security" },
-            { name: "Model Performance Optimizer", description: "Optimizes AI response efficiency", type: "optimization" }
+            {
+                name: "Prompt Architecture Designer",
+                description: "Creates effective AI prompts for your extension",
+                type: "prompts",
+                workInstructions: "Describe your use case, AI model choice, desired output, and context needs"
+            },
+            {
+                name: "AI Integration Engineer",
+                description: "Designs seamless AI service connection",
+                type: "integration",
+                workInstructions: "Specify your AI service choice, API requirements, response handling needs, and error scenarios"
+            },
+            {
+                name: "Cost Optimization Manager",
+                description: "Optimizes AI usage efficiency",
+                type: "costs",
+                workInstructions: "Share your usage patterns, budget constraints, performance needs, and scale requirements"
+            },
+            {
+                name: "Response Handler Builder",
+                description: "Creates AI response processing system",
+                type: "responses",
+                workInstructions: "Define your response format, processing needs, error cases, and required output format"
+            },
+            {
+                name: "AI Security Architect",
+                description: "Implements secure AI integration",
+                type: "security",
+                workInstructions: "List your security requirements, data handling needs, privacy needs, and compliance rules"
+            },
+            {
+                name: "Model Performance Optimizer",
+                description: "Optimizes AI response performance",
+                type: "optimization",
+                workInstructions: "Share your performance metrics, quality requirements, speed needs, and accuracy goals"
+            }
         ]
     },
     marcus: {
         name: "Marcus Thompson",
         title: "Chrome Store Launch Strategist",
-        bio: "10 years of app store optimization experience with 500+ successful launches. Expert in store presence and conversion optimization.",
+        assistantId: "asst_mLuXIK4Dq9EvEgiAuWX89yja",
+        bio: "10 years of app store optimization, 500+ successful launches",
         tasks: [
-            { name: "Store Listing Optimizer", description: "Creates compelling store page content", type: "listing" },
-            { name: "Category Strategist", description: "Optimizes store categorization", type: "category" },
-            { name: "Price Point Optimizer", description: "Determines revenue-maximizing pricing", type: "pricing" },
-            { name: "Review Response Manager", description: "Creates effective review management strategy", type: "reviews" },
-            { name: "Store Analytics Expert", description: "Analyzes store performance data", type: "analytics" },
-            { name: "Launch Sequence Planner", description: "Plans successful store launch", type: "launch" }
+            {
+                name: "Store Listing Optimizer",
+                description: "Creates compelling store page",
+                type: "listing",
+                workInstructions: "List your extension features, target audience, key benefits, and competitor information"
+            },
+            {
+                name: "Category Strategist",
+                description: "Optimizes store categorization",
+                type: "category",
+                workInstructions: "Describe your extension functionality, user needs, target demographics, and similar extensions"
+            },
+            {
+                name: "Price Point Optimizer",
+                description: "Determines revenue-maximizing pricing",
+                type: "pricing",
+                workInstructions: "Share your feature set, target market, competitor prices, and cost structure"
+            },
+            {
+                name: "Review Response Manager",
+                description: "Creates effective review management system",
+                type: "reviews",
+                workInstructions: "Provide review content, user sentiment, technical issues, and response goals"
+            },
+            {
+                name: "Store Analytics Expert",
+                description: "Analyzes store performance data",
+                type: "analytics",
+                workInstructions: "List your current metrics, target metrics, time period, and growth goals"
+            },
+            {
+                name: "Launch Sequence Planner",
+                description: "Plans successful store launch",
+                type: "launch",
+                workInstructions: "Define your launch timeline, target audience, marketing assets, and success metrics"
+            }
         ]
     },
     sarah: {
         name: "Dr. Sarah Peterson",
         title: "Extension Architecture Specialist",
-        bio: "PhD in Computer Science with 12 years of Chrome extension development experience. Expert in technical implementation.",
+        assistantId: "asst_qnef4J22UaggREIffmdJ60Ye",
+        bio: "PhD in Computer Science, 12 years Chrome extension development experience",
         tasks: [
-            { name: "Manifest Generator", description: "Creates optimized manifest.json configuration", type: "manifest" },
-            { name: "Background Service Builder", description: "Designs efficient background processing", type: "background" },
-            { name: "Content Script Architect", description: "Plans page interaction implementation", type: "content" },
-            { name: "Storage System Designer", description: "Creates data management solution", type: "storage" },
-            { name: "API Integration Expert", description: "Plans external API connections", type: "api" },
-            { name: "Extension Debugger", description: "Creates testing and debugging setup", type: "debug" }
+            {
+                name: "Manifest Generator",
+                description: "Creates optimized manifest.json",
+                type: "manifest",
+                workInstructions: "List your extension features, required permissions, API usage, and security needs"
+            },
+            {
+                name: "Background Service Builder",
+                description: "Develops efficient background processing",
+                type: "background",
+                workInstructions: "Describe required functionality, performance needs, state management, and API interactions"
+            },
+            {
+                name: "Content Script Architect",
+                description: "Implements page interactions",
+                type: "content",
+                workInstructions: "List target websites, required access, user interactions, and data needs"
+            },
+            {
+                name: "Storage System Designer",
+                description: "Creates data management solution",
+                type: "storage",
+                workInstructions: "Define your data structure, storage needs, security requirements, and sync preferences"
+            },
+            {
+                name: "API Integration Expert",
+                description: "Sets up external API connections",
+                type: "api",
+                workInstructions: "Specify API requirements, authentication needs, data handling, and error scenarios"
+            },
+            {
+                name: "Extension Debugger",
+                description: "Creates testing and debugging setup",
+                type: "debug",
+                workInstructions: "Share known issues, test scenarios, performance metrics, and error logs"
+            }
         ]
     },
     alex: {
         name: "Alex Chen",
         title: "Visual Design Architect",
-        bio: "15 years of UI/UX experience specializing in Chrome extensions. Expert in creating professional, user-friendly designs.",
+        assistantId: "asst_SEpK5PwswVJmYKIObjwiYttw",
+        bio: "15 years UI/UX experience specializing in Chrome extensions",
         tasks: [
-            { name: "Extension Icon Creator", description: "Designs professional icon suite", type: "icons" },
-            { name: "Store Screenshot Planner", description: "Creates compelling store listing visuals", type: "screenshots" },
-            { name: "Extension UI Designer", description: "Develops user-friendly interface", type: "ui" },
-            { name: "Marketing Visual Generator", description: "Creates promotional assets", type: "marketing" },
-            { name: "Animation Designer", description: "Plans engaging UI interactions", type: "animations" },
-            { name: "Visual Asset Organizer", description: "Creates visual asset management system", type: "assets" }
+            {
+                name: "Extension Icon Creator",
+                description: "Designs professional icon suite",
+                type: "icons",
+                workInstructions: "Describe extension purpose, target audience, brand colors/style, and key visual elements"
+            },
+            {
+                name: "Store Screenshot Planner",
+                description: "Creates compelling store listing visuals",
+                type: "screenshots",
+                workInstructions: "List key features, user benefits, UI highlights, and target emotions"
+            },
+            {
+                name: "Extension UI Designer",
+                description: "Develops user-friendly interface",
+                type: "ui",
+                workInstructions: "Specify required elements, core functions, space needs, and user flow"
+            },
+            {
+                name: "Marketing Visual Generator",
+                description: "Creates promotional assets",
+                type: "marketing",
+                workInstructions: "Share value proposition, target platforms, brand identity, and campaign goals"
+            },
+            {
+                name: "Animation Designer",
+                description: "Designs engaging UI interactions",
+                type: "animations",
+                workInstructions: "List interactive elements, desired effects, performance needs, and timing requirements"
+            },
+            {
+                name: "Visual Asset Organizer",
+                description: "Manages visual asset system",
+                type: "assets",
+                workInstructions: "Provide asset inventory, file structure needs, naming conventions, and version control requirements"
+            }
         ]
     }
 };
@@ -98,7 +284,7 @@ function showProfile(assistantId) {
     currentAssistant = assistantId;
     
     // Update profile details
-    document.getElementById('profile-image').src = `https://ui-avatars.com/api/?name=${assistant.name.replace(' ', '+')}&background=3ECF8E&color=fff&size=200`;
+    document.getElementById('profile-image').src = `https://ui-avatars.com/api/?name=${assistant.name.replace(' ', '+')}&background=3ECF8E&color=fff&size=80`;
     document.getElementById('profile-name').textContent = assistant.name;
     document.getElementById('profile-title').textContent = assistant.title;
     document.getElementById('profile-bio').textContent = assistant.bio;
@@ -132,6 +318,7 @@ function showWorkInterface(taskType) {
     const task = assistant.tasks.find(t => t.type === taskType);
     
     document.getElementById('task-title').textContent = task.name;
+    document.getElementById('user-input').placeholder = task.workInstructions;
     currentTask = taskType;
     
     // Reset interface
@@ -163,6 +350,7 @@ async function submitQuery() {
             input: userInput,
             context: {
                 assistant: currentAssistant,
+                assistantId: assistant.assistantId,
                 task: currentTask,
                 isPaid: document.getElementById('dev-toggle').checked
             }
