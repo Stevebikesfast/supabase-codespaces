@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Supabase Chrome Extension",
+  "version": "1.0",
+  "description": "Chrome extension with Supabase integration",
+  "icons": {
+    "16": "icons/icon16.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://gfahskcoysrpfkjcyrpu.supabase.co/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.svg",
+      "48": "icons/icon48.svg",
+      "128": "icons/icon128.svg"
+    }
+  }
+}
