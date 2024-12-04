@@ -12,7 +12,7 @@
     }
 
     .container {
-      max-width: 780px;
+      width: 760px;
       margin: 0 auto;
     }
 
@@ -174,6 +174,17 @@
     }
 
     /* Work Interface Styles */
+    #task-title {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .task-description-text {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
     .input-area {
       margin-bottom: 20px;
     }
@@ -344,8 +355,9 @@
     <div id="work-interface" class="hidden">
       <button class="back-button" id="back-to-tasks">← Back to Tasks</button>
       <h2 id="task-title">Task Name</h2>
+      <p class="task-description-text">List your extension features, available timeline, team resources, and any technical dependencies</p>
       <div class="input-area">
-        <textarea id="user-input" placeholder="Describe your extension and what you'd like help with..."></textarea>
+        <textarea id="user-input"></textarea>
         <button id="submit-query">Get Assistance</button>
       </div>
       <div id="loading">Processing your request...</div>
