@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Supabase OpenAI Test",
   "version": "1.0",
-  "description": "Test Supabase and OpenAI integration",
+  "description": "Test connection to Supabase and OpenAI",
   "permissions": [],
   "host_permissions": [
     "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
@@ -10,5 +10,8 @@
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com"
   }
 }

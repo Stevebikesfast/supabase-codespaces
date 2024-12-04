@@ -16,15 +16,25 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchOpenAIKey() {
         updateStatus('Step 1/3: Fetching OpenAI key from Supabase...');
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?key_name=eq.openai_project_key`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key_value&key_name=eq.openai_project_key`, {
+            method: 'GET',
             headers: {
+                'Content-Type': 'application/json',
                 'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Prefer': 'return=minimal'
             }
         });
 
         if (!response.ok) {
-            throw new Error(`Supabase API error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Supabase Error Details:', {
+                status: response.status,
+                statusText: response.statusText,
+                headers: Object.fromEntries(response.headers.entries()),
+                error: errorText
+            });
+            throw new Error(`Supabase API error! status: ${response.status}, details: ${errorText}`);
         }
 
         const data = await response.json();
