@@ -1,55 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Supabase OpenAI Test</title>
+  <title>AI Assistant</title>
   <style>
     body {
       width: 600px;
-      padding: 15px;
-      font-family: monospace;
+      padding: 20px;
+      font-family: Arial, sans-serif;
     }
-    button {
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    #assistant-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    label {
+      font-weight: bold;
+      color: #444;
+    }
+    textarea {
       width: 100%;
       padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
       background: #3ECF8E;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      margin-bottom: 15px;
       font-size: 14px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #2EBF7E;
     }
     button:disabled {
       background: #ccc;
+      cursor: not-allowed;
     }
-    #status {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-      background: #f0f0f0;
-      font-weight: bold;
-    }
-    #result {
-      padding: 10px;
+    #response {
+      margin-top: 20px;
+      padding: 15px;
       background: #f8f8f8;
       border: 1px solid #ddd;
       border-radius: 4px;
+      min-height: 100px;
       white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 12px;
-      max-height: 400px;
-      overflow-y: auto;
+    }
+    .loading {
+      color: #666;
+      font-style: italic;
     }
     .error {
-      color: red;
-      background: #fff0f0;
+      color: #dc3545;
+      background: #f8d7da;
+      border-color: #f5c6cb;
     }
   </style>
 </head>
 <body>
-  <button id="testButton">Test Supabase and OpenAI Connections</button>
-  <div id="status">Ready to test connections...</div>
-  <div id="result"></div>
+  <h1>David - AI Assistant</h1>
+  <form id="assistant-form">
+    <label for="user-input">Enter your query:</label>
+    <textarea 
+      id="user-input" 
+      rows="4" 
+      placeholder="Type your message here..."
+      required></textarea>
+    <button type="submit" id="submit-button">Ask David</button>
+  </form>
+  <h2>Response:</h2>
+  <div id="response">Enter your query above and click "Ask David" to start.</div>
   <script src="popup.js"></script>
 </body>
 </html>

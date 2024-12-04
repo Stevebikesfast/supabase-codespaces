@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Supabase OpenAI Test",
+  "name": "David AI Assistant",
   "version": "1.0",
-  "description": "Test Supabase and OpenAI integration",
-  "permissions": [],
+  "description": "Chat with David AI Assistant using OpenAI",
+  "permissions": ["storage"],
   "host_permissions": [
     "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
     "https://api.openai.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com;"
   }
 }
