@@ -1,16 +1,27 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+  const testButton = document.getElementById('testButton');
   const statusDiv = document.getElementById('status');
 
-  try {
-    // Test Supabase connection by attempting to fetch OpenAI key
-    const key = await window.supabaseService.fetchOpenAIKey();
-    
-    statusDiv.textContent = 'Successfully connected to Supabase!';
-    statusDiv.className = 'success';
-    console.log('OpenAI key retrieved successfully');
-  } catch (error) {
-    statusDiv.textContent = 'Error connecting to Supabase: ' + error.message;
-    statusDiv.className = 'error';
-    console.error('Connection error:', error);
-  }
+  testButton.addEventListener('click', async () => {
+    try {
+      // Test connection by attempting to fetch OpenAI key
+      const key = await window.supabaseService.getOpenAIKey();
+      
+      const message = 'Successfully retrieved OpenAI key!';
+      statusDiv.textContent = message;
+      statusDiv.className = 'success';
+      console.log(message);
+      console.log('Key:', key);
+    } catch (error) {
+      let errorMessage = error.message || 'Unknown error occurred';
+      // If it's an object, try to get more details
+      if (error.code || error.details || error.hint) {
+        errorMessage = `${error.message || ''} ${error.details || ''} ${error.hint || ''}`.trim();
+      }
+      
+      statusDiv.textContent = 'Error: ' + errorMessage;
+      statusDiv.className = 'error';
+      console.error('Connection error:', error);
+    }
+  });
 });

@@ -16,15 +16,16 @@ class SupabaseService {
     }
   }
 
-  async fetchOpenAIKey() {
+  async getOpenAIKey() {
     try {
       const { data, error } = await this.client
-        .from('config')
-        .select('openai_key')
+        .from('private.api_keys')
+        .select('key')
+        .eq('key_type', 'openai')
         .single();
 
       if (error) throw error;
-      return data.openai_key;
+      return data.key;
     } catch (error) {
       console.error('Error fetching OpenAI key:', error);
       throw error;

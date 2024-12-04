@@ -15,10 +15,26 @@ h1 {
   color: #333;
 }
 
+#testButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3ECF8E;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+#testButton:hover {
+  background-color: #2EBF7E;
+}
+
 #status {
   padding: 10px;
   margin-top: 10px;
   border-radius: 4px;
+  font-size: 14px;
 }
 
 .success {
