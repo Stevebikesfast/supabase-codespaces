@@ -1,3 +1,6 @@
+import { SUPABASE_CONFIG } from './config.js';
+import { supabaseService } from './supabase.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
   const statusDiv = document.getElementById('status');
 
