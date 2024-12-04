@@ -1,87 +1,38 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const assistantSelect = document.getElementById('assistant');
-  const chatMessages = document.getElementById('chat-messages');
-  const userInput = document.getElementById('user-input');
-  const sendButton = document.getElementById('send-button');
-  const statusDiv = document.getElementById('status');
+document.addEventListener('DOMContentLoaded', function() {
+    const testButton = document.getElementById('testButton');
+    const resultDiv = document.getElementById('result');
 
-  // Load assistants into dropdown
-  chrome.runtime.sendMessage({ type: 'GET_ASSISTANTS' }, response => {
-    assistantSelect.innerHTML = response.assistants
-      .map(name => `<option value="${name}">${name}</option>`)
-      .join('');
-  });
+    // Initialize Supabase client
+    const supabase = supabase.createClient(
+        'https://gfahskcoysrpfkjcyrpu.supabase.co',
+        'PeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA'
+    );
 
-  // Add message to chat
-  function addMessage(content, isUser = false) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
-    messageDiv.textContent = content;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
+    testButton.addEventListener('click', async () => {
+        resultDiv.textContent = 'Testing connection...';
+        
+        try {
+            // Test Supabase connection by fetching OpenAI key
+            const { data, error } = await supabase
+                .from('settings')
+                .select('key_value')
+                .eq('key_name', 'openai_project_key')
+                .single();
 
-  // Show status message
-  function showStatus(message, isError = false) {
-    statusDiv.textContent = message;
-    statusDiv.className = isError ? 'error' : 'success';
-  }
+            if (error) {
+                throw error;
+            }
 
-  // Handle send message
-  async function handleSend() {
-    const message = userInput.value.trim();
-    const selectedAssistant = assistantSelect.value;
+            if (!data) {
+                throw new Error('No OpenAI key found in settings table');
+            }
 
-    if (!message) {
-      showStatus('Please enter a message', true);
-      return;
-    }
+            resultDiv.textContent = 'Successfully connected to Supabase and found OpenAI key!';
+            console.log('OpenAI key:', data.key_value);
 
-    if (!selectedAssistant) {
-      showStatus('Please select an assistant', true);
-      return;
-    }
-
-    // Disable input while processing
-    userInput.disabled = true;
-    sendButton.disabled = true;
-    showStatus('Sending message...');
-
-    // Add user message to chat
-    addMessage(message, true);
-
-    // Send message to background script
-    chrome.runtime.sendMessage({
-      type: 'SEND_MESSAGE',
-      assistant: selectedAssistant,
-      message: message
-    }, response => {
-      if (response.success) {
-        // Add assistant response to chat
-        addMessage(response.response);
-        showStatus('Message sent successfully');
-      } else {
-        showStatus(`Error: ${response.error}`, true);
-      }
-
-      // Re-enable input
-      userInput.disabled = false;
-      sendButton.disabled = false;
-      userInput.value = '';
-      userInput.focus();
+        } catch (error) {
+            resultDiv.textContent = 'Error: ' + error.message;
+            console.error('Full error:', error);
+        }
     });
-  }
-
-  // Event listeners
-  sendButton.addEventListener('click', handleSend);
-  
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  });
-
-  // Initial status
-  showStatus('Select an assistant and start chatting!');
 });

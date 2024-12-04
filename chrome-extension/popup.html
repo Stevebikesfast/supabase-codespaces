@@ -1,41 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Assistant</title>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="popup.css">
-  <!-- Load Supabase client from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Supabase Test</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+    }
+    button {
+      margin: 10px 0;
+      padding: 5px 10px;
+    }
+    #result {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      min-height: 50px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>AI Assistant</h1>
-    
-    <!-- Assistant Selection -->
-    <div class="assistant-selection">
-      <label for="assistant">Select Assistant:</label>
-      <select id="assistant">
-        <option value="">Loading assistants...</option>
-      </select>
-    </div>
-
-    <!-- Chat Interface -->
-    <div class="chat-container">
-      <div id="chat-messages" class="chat-messages">
-        <!-- Messages will be inserted here -->
-      </div>
-      
-      <div class="input-container">
-        <textarea id="user-input" placeholder="Type your message here..." rows="3"></textarea>
-        <button id="send-button">Send</button>
-      </div>
-    </div>
-
-    <!-- Status Messages -->
-    <div id="status" class="status"></div>
-  </div>
-
-  <!-- Load popup logic -->
+  <button id="testButton">Test Supabase Connection</button>
+  <div id="result"></div>
   <script src="popup.js"></script>
 </body>
 </html>
