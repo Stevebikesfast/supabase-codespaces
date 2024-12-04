@@ -33,7 +33,7 @@ async function createThread(openaiKey) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${openaiKey}`,
-            'OpenAI-Beta': 'assistants=v1'
+            'OpenAI-Beta': 'assistants=v2'
         }
     });
 
@@ -51,7 +51,7 @@ async function addMessage(openaiKey, threadId, content) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${openaiKey}`,
-            'OpenAI-Beta': 'assistants=v1'
+            'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
             role: 'user',
@@ -73,7 +73,7 @@ async function runAssistant(openaiKey, threadId) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${openaiKey}`,
-            'OpenAI-Beta': 'assistants=v1'
+            'OpenAI-Beta': 'assistants=v2'
         },
         body: JSON.stringify({
             assistant_id: ASSISTANT_ID
@@ -90,13 +90,13 @@ async function runAssistant(openaiKey, threadId) {
 
 async function waitForCompletion(openaiKey, threadId, runId) {
     let attempts = 0;
-    const maxAttempts = 30; // 30 seconds timeout
+    const maxAttempts = 60; // 60 seconds timeout
 
     while (attempts < maxAttempts) {
         const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
             headers: {
                 'Authorization': `Bearer ${openaiKey}`,
-                'OpenAI-Beta': 'assistants=v1'
+                'OpenAI-Beta': 'assistants=v2'
             }
         });
 
@@ -106,6 +106,7 @@ async function waitForCompletion(openaiKey, threadId, runId) {
         }
 
         const runStatus = await response.json();
+        console.log('Run status:', runStatus.status);
 
         switch (runStatus.status) {
             case 'completed':
@@ -116,6 +117,8 @@ async function waitForCompletion(openaiKey, threadId, runId) {
                 throw new Error('Run expired');
             case 'cancelled':
                 throw new Error('Run cancelled');
+            case 'requires_action':
+                throw new Error('Run requires action');
             default:
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 attempts++;
@@ -129,7 +132,7 @@ async function getMessages(openaiKey, threadId) {
     const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
         headers: {
             'Authorization': `Bearer ${openaiKey}`,
-            'OpenAI-Beta': 'assistants=v1'
+            'OpenAI-Beta': 'assistants=v2'
         }
     });
 
@@ -143,23 +146,31 @@ async function getMessages(openaiKey, threadId) {
 
 async function handleAssistantQuery(input) {
     try {
+        console.log('Starting assistant query...');
+        
         // Get OpenAI key
         const openaiKey = await getOpenAIKey();
+        console.log('OpenAI key retrieved');
         
         // Create thread
         const thread = await createThread(openaiKey);
+        console.log('Thread created:', thread.id);
         
         // Add user's message
         await addMessage(openaiKey, thread.id, input);
+        console.log('Message added to thread');
         
         // Run the assistant
         const run = await runAssistant(openaiKey, thread.id);
+        console.log('Assistant run started:', run.id);
         
         // Wait for completion
         await waitForCompletion(openaiKey, thread.id, run.id);
+        console.log('Run completed');
         
         // Get messages
         const messages = await getMessages(openaiKey, thread.id);
+        console.log('Messages retrieved');
         
         // Find assistant's response
         const assistantMessage = messages.data.find(msg => msg.role === 'assistant');
