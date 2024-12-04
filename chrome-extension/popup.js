@@ -4,69 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultDiv = document.getElementById('result');
     const statusDiv = document.getElementById('status');
 
-    const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
-
     function updateStatus(message, isError = false) {
         statusDiv.textContent = message;
         statusDiv.style.color = isError ? 'red' : 'black';
         console.log(`Status: ${message}`);
     }
 
-    async function fetchOpenAIKey() {
+    async function getOpenAIKey() {
         updateStatus('Step 1/3: Fetching OpenAI key from Supabase...');
         
-        // First, let's check what's in the settings table
-        const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
-        });
-
-        if (!checkResponse.ok) {
-            const errorText = await checkResponse.text();
-            console.error('Supabase Error:', {
-                status: checkResponse.status,
-                statusText: checkResponse.statusText,
-                error: errorText
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({ type: 'GET_OPENAI_KEY' }, response => {
+                if (response.success) {
+                    console.log('Successfully retrieved OpenAI key');
+                    updateStatus('✓ Step 1/3: Successfully retrieved OpenAI key from Supabase');
+                    resolve(response.key);
+                } else {
+                    console.error('Error getting OpenAI key:', response.error);
+                    reject(new Error(response.error));
+                }
             });
-            throw new Error(`Supabase API error! status: ${checkResponse.status}, details: ${errorText}`);
-        }
-
-        const allSettings = await checkResponse.json();
-        console.log('All settings in table:', allSettings);
-
-        // Now try to find our specific key
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key_value&key_name=eq.openai_project_key`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
         });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Supabase API error! status: ${response.status}, details: ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log('Specific key query response:', data);
-
-        if (!data || data.length === 0) {
-            console.error('Settings table data:', {
-                allSettings: allSettings,
-                specificQuery: data
-            });
-            throw new Error('Could not find OpenAI key in settings table. Please check if key_name="openai_project_key" exists.');
-        }
-
-        updateStatus('✓ Step 1/3: Successfully retrieved OpenAI key from Supabase');
-        return data[0].key_value;
     }
 
     async function makeOpenAIRequest(openaiKey, message) {
@@ -127,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
         resultDiv.textContent = '';
         
         try {
-            // Step 1: Fetch OpenAI key from Supabase
-            const openaiKey = await fetchOpenAIKey();
+            // Step 1: Fetch OpenAI key from Supabase via background script
+            const openaiKey = await getOpenAIKey();
 
             // Step 2: Make OpenAI API call
             const message = testMessage.value.trim() || 'Hello, can you help me test if this connection is working?';
