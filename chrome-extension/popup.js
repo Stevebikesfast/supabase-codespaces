@@ -1,109 +1,80 @@
 document.addEventListener('DOMContentLoaded', function() {
     const testButton = document.getElementById('testButton');
-    const testMessage = document.getElementById('testMessage');
-    const resultDiv = document.getElementById('result');
     const statusDiv = document.getElementById('status');
+    const resultDiv = document.getElementById('result');
 
-    function updateStatus(message, isError = false) {
+    const SUPABASE_URL = 'https://gfahskcoysrpfkjcyrpu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmYWhza2NveXNycGZramN5cnB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyMzEyNjQsImV4cCI6MjA0ODgwNzI2NH0.fdbimvLKdCboPP6qo2Y7cgxronU1JtMcfBVXV1WhfuA';
+
+    async function updateStatus(message) {
         statusDiv.textContent = message;
-        statusDiv.style.color = isError ? 'red' : 'black';
-        console.log(`Status: ${message}`);
+        console.log('Status:', message);
     }
 
-    async function getOpenAIKey() {
-        updateStatus('Step 1/3: Fetching OpenAI key from Supabase...');
-        
-        return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({ type: 'GET_OPENAI_KEY' }, response => {
-                if (response.success) {
-                    console.log('Successfully retrieved OpenAI key');
-                    updateStatus('✓ Step 1/3: Successfully retrieved OpenAI key from Supabase');
-                    resolve(response.key);
-                } else {
-                    console.error('Error getting OpenAI key:', response.error);
-                    reject(new Error(response.error));
+    async function testConnection() {
+        testButton.disabled = true;
+        try {
+            // Step 1: Get OpenAI key from Supabase
+            await updateStatus('1. Fetching OpenAI key from Supabase...');
+            
+            const settingsResponse = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key_value&key_name=eq.openai_project_key`, {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
                 }
             });
-        });
-    }
 
-    async function makeOpenAIRequest(openaiKey, message) {
-        updateStatus('Step 2/3: Sending message to OpenAI...');
-        
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${openaiKey}`
-            },
-            body: JSON.stringify({
-                model: 'gpt-4',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'You are a helpful assistant testing the connection between a Chrome extension, Supabase, and OpenAI.'
-                    },
-                    {
+            if (!settingsResponse.ok) {
+                throw new Error(`Supabase API error: ${settingsResponse.status}`);
+            }
+
+            const settings = await settingsResponse.json();
+            console.log('Supabase Response:', settings);
+
+            if (!settings || settings.length === 0) {
+                throw new Error('OpenAI key not found in settings table');
+            }
+
+            const openaiKey = settings[0].key_value;
+            await updateStatus('2. Successfully retrieved OpenAI key');
+
+            // Step 2: Test OpenAI connection
+            await updateStatus('3. Testing OpenAI connection...');
+            
+            const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${openaiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4',
+                    messages: [{
                         role: 'user',
-                        content: message
-                    }
-                ]
-            })
-        });
+                        content: 'Please respond with "Connection successful!" if you receive this message.'
+                    }]
+                })
+            });
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
-        }
+            if (!openaiResponse.ok) {
+                const error = await openaiResponse.json();
+                throw new Error(`OpenAI API error: ${error.error?.message || openaiResponse.status}`);
+            }
 
-        const data = await response.json();
-        console.log('OpenAI Response:', {
-            success: true,
-            data: data,
-            message: 'Successfully received response from OpenAI'
-        });
+            const openaiResult = await openaiResponse.json();
+            console.log('OpenAI Response:', openaiResult);
 
-        updateStatus('✓ Step 2/3: Successfully received response from OpenAI');
-        return data.choices[0]?.message?.content || 'No response from assistant';
-    }
-
-    async function displayResponse(response) {
-        updateStatus('Step 3/3: Displaying response...');
-        resultDiv.textContent = response;
-        updateStatus('✓ Step 3/3: All steps completed successfully!');
-        
-        console.log('Test Summary:', {
-            supabaseConnection: '✓ Success',
-            openAIKeyRetrieval: '✓ Success',
-            openAIResponse: '✓ Success',
-            responseDisplayed: '✓ Success'
-        });
-    }
-
-    testButton.addEventListener('click', async () => {
-        testButton.disabled = true;
-        resultDiv.textContent = '';
-        
-        try {
-            // Step 1: Fetch OpenAI key from Supabase via background script
-            const openaiKey = await getOpenAIKey();
-
-            // Step 2: Make OpenAI API call
-            const message = testMessage.value.trim() || 'Hello, can you help me test if this connection is working?';
-            const response = await makeOpenAIRequest(openaiKey, message);
-
-            // Step 3: Display result
-            await displayResponse(response);
+            resultDiv.textContent = openaiResult.choices[0].message.content;
+            await updateStatus('✓ All connection tests passed!');
 
         } catch (error) {
-            updateStatus(`Error: ${error.message}`, true);
-            console.error('Test Failed:', {
-                error: error,
-                message: error.message,
-                stack: error.stack
-            });
+            console.error('Test failed:', error);
+            await updateStatus(`Error: ${error.message}`);
+            resultDiv.textContent = '';
         } finally {
             testButton.disabled = false;
         }
-    });
+    }
+
+    testButton.addEventListener('click', testConnection);
 });
