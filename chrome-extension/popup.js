@@ -16,36 +16,53 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchOpenAIKey() {
         updateStatus('Step 1/3: Fetching OpenAI key from Supabase...');
         
+        // First, let's check what's in the settings table
+        const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=*`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+
+        if (!checkResponse.ok) {
+            const errorText = await checkResponse.text();
+            console.error('Supabase Error:', {
+                status: checkResponse.status,
+                statusText: checkResponse.statusText,
+                error: errorText
+            });
+            throw new Error(`Supabase API error! status: ${checkResponse.status}, details: ${errorText}`);
+        }
+
+        const allSettings = await checkResponse.json();
+        console.log('All settings in table:', allSettings);
+
+        // Now try to find our specific key
         const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key_value&key_name=eq.openai_project_key`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'return=minimal'
+                'Authorization': `Bearer ${SUPABASE_KEY}`
             }
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Supabase Error Details:', {
-                status: response.status,
-                statusText: response.statusText,
-                headers: Object.fromEntries(response.headers.entries()),
-                error: errorText
-            });
             throw new Error(`Supabase API error! status: ${response.status}, details: ${errorText}`);
         }
 
         const data = await response.json();
-        console.log('Supabase Response:', {
-            success: true,
-            data: data,
-            message: 'Successfully retrieved data from Supabase'
-        });
+        console.log('Specific key query response:', data);
 
         if (!data || data.length === 0) {
-            throw new Error('No OpenAI key found in settings table');
+            console.error('Settings table data:', {
+                allSettings: allSettings,
+                specificQuery: data
+            });
+            throw new Error('Could not find OpenAI key in settings table. Please check if key_name="openai_project_key" exists.');
         }
 
         updateStatus('✓ Step 1/3: Successfully retrieved OpenAI key from Supabase');
