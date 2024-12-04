@@ -8,6 +8,7 @@ const assistants = {
         name: "David Kumar",
         title: "Extension Project & QA Engineer",
         assistantId: "asst_ZfHROr8g5jAEZA3HgtpBd4VT",
+        image: "Assistant-Profile/david-kumar.png",
         bio: "10 years experience, guided 200+ successful extension launches with zero critical post-launch issues",
         tasks: [
             {
@@ -52,6 +53,7 @@ const assistants = {
         name: "James Morrison",
         title: "Extension Monetization Strategist",
         assistantId: "asst_KU36EdfB300bU6thcFGloMC3",
+        image: "Assistant-Profile/james-morrison.png",
         bio: "MBA with proven success generating over $2M in extension revenue",
         tasks: [
             {
@@ -96,6 +98,7 @@ const assistants = {
         name: "Dr. Maya Patel",
         title: "AI Integration Architect",
         assistantId: "asst_TiwJg7g4ADVOc304Z6btxcSN",
+        image: "Assistant-Profile/dr-maya-patel.png",
         bio: "PhD in AI with extensive experience in prompt engineering and extension development",
         tasks: [
             {
@@ -140,6 +143,7 @@ const assistants = {
         name: "Marcus Thompson",
         title: "Chrome Store Launch Strategist",
         assistantId: "asst_mLuXIK4Dq9EvEgiAuWX89yja",
+        image: "Assistant-Profile/marcus-thompson.png",
         bio: "10 years of app store optimization, 500+ successful launches",
         tasks: [
             {
@@ -184,6 +188,7 @@ const assistants = {
         name: "Dr. Sarah Peterson",
         title: "Extension Architecture Specialist",
         assistantId: "asst_qnef4J22UaggREIffmdJ60Ye",
+        image: "Assistant-Profile/dr-sarah-peterson.png",
         bio: "PhD in Computer Science, 12 years Chrome extension development experience",
         tasks: [
             {
@@ -228,6 +233,7 @@ const assistants = {
         name: "Alex Chen",
         title: "Visual Design Architect",
         assistantId: "asst_SEpK5PwswVJmYKIObjwiYttw",
+        image: "Assistant-Profile/alex-chen.png",
         bio: "15 years UI/UX experience specializing in Chrome extensions",
         tasks: [
             {
@@ -284,7 +290,7 @@ function showProfile(assistantId) {
     currentAssistant = assistantId;
     
     // Update profile details
-    document.getElementById('profile-image').src = `https://ui-avatars.com/api/?name=${assistant.name.replace(' ', '+')}&background=3ECF8E&color=fff&size=80`;
+    document.getElementById('profile-image').src = assistant.image;
     document.getElementById('profile-name').textContent = assistant.name;
     document.getElementById('profile-title').textContent = assistant.title;
     document.getElementById('profile-bio').textContent = assistant.bio;
@@ -318,7 +324,7 @@ function showWorkInterface(taskType) {
     const task = assistant.tasks.find(t => t.type === taskType);
     
     document.getElementById('task-title').textContent = task.name;
-    document.getElementById('user-input').placeholder = task.workInstructions;
+    document.querySelector('.task-description-text').textContent = task.workInstructions;
     currentTask = taskType;
     
     // Reset interface
@@ -403,6 +409,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle assistant card clicks
     const assistantCards = document.querySelectorAll('.assistant-card');
     assistantCards.forEach(card => {
+        const assistantId = card.dataset.assistant;
+        const assistant = assistants[assistantId];
+        if (assistant) {
+            const img = card.querySelector('.profile-pic');
+            img.src = assistant.image;
+        }
         card.addEventListener('click', function() {
             if (!this.classList.contains('locked')) {
                 showProfile(this.dataset.assistant);
