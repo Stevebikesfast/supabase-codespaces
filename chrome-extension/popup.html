@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Supabase Test</title>
+  <title>Supabase OpenAI Test</title>
   <style>
     body {
-      width: 300px;
-      padding: 10px;
+      width: 400px;
+      padding: 15px;
       font-family: Arial, sans-serif;
     }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: none;
+    }
     button {
-      margin: 10px 0;
       padding: 8px 16px;
       background-color: #3ECF8E;
       color: white;
@@ -20,19 +33,33 @@
     button:hover {
       background-color: #2EBF7E;
     }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
     #result {
       margin-top: 10px;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      min-height: 50px;
+      min-height: 100px;
+      white-space: pre-wrap;
       word-wrap: break-word;
+    }
+    .status {
+      color: #666;
+      font-style: italic;
+      margin-top: 5px;
     }
   </style>
 </head>
 <body>
-  <button id="testButton">Test Supabase Connection</button>
-  <div id="result"></div>
+  <div class="container">
+    <textarea id="testMessage" placeholder="Enter a test message for the AI assistant...">Hello, can you help me test if this connection is working?</textarea>
+    <button id="testButton">Test Connection & Send Message</button>
+    <div class="status" id="status">Ready to test...</div>
+    <div id="result"></div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
