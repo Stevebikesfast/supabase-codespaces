@@ -5,7 +5,7 @@ import { supabase } from './supabaseClient.js'
 async function getRedirectUrl() {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage({ action: 'get_redirect_url' }, (response) => {
-      resolve(response.url)
+      resolve(response?.url || `https://${chrome.runtime.id}.chromiumapp.org/`)
     })
   })
 }
@@ -30,6 +30,14 @@ export const signUp = async (email, password) => {
       return { user: null, error }
     }
 
+    if (!data?.user) {
+      console.error('No user data received')
+      return { 
+        user: null, 
+        error: { message: 'Failed to create user account' }
+      }
+    }
+
     return { 
       user: data.user, 
       error: null,
@@ -39,7 +47,12 @@ export const signUp = async (email, password) => {
     }
   } catch (err) {
     console.error('Unexpected error during sign up:', err)
-    return { user: null, error: err }
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signup'
+      }
+    }
   }
 }
 
@@ -56,10 +69,23 @@ export const signIn = async (email, password) => {
       return { user: null, error }
     }
 
+    if (!data?.user) {
+      console.error('No user data received')
+      return { 
+        user: null, 
+        error: { message: 'Failed to sign in' }
+      }
+    }
+
     return { user: data.user, error: null }
   } catch (err) {
     console.error('Unexpected error during sign in:', err)
-    return { user: null, error: err }
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signin'
+      }
+    }
   }
 }
 
@@ -68,6 +94,7 @@ export const getUser = async () => {
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     if (sessionError) {
+      console.error('Error getting session:', sessionError.message)
       return { user: null, error: sessionError }
     }
 
@@ -77,13 +104,26 @@ export const getUser = async () => {
 
     const { data: { user }, error: userError } = await supabase.auth.getUser()
     if (userError) {
+      console.error('Error getting user:', userError.message)
       return { user: null, error: userError }
+    }
+
+    if (!user) {
+      return { 
+        user: null, 
+        error: { message: 'No user found' }
+      }
     }
 
     return { user, error: null }
   } catch (err) {
     console.error('Unexpected error getting user:', err)
-    return { user: null, error: err }
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred getting user'
+      }
+    }
   }
 }
 
@@ -98,7 +138,11 @@ export const signOut = async () => {
     return { error: null }
   } catch (err) {
     console.error('Unexpected error during sign out:', err)
-    return { error: err }
+    return { 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signout'
+      }
+    }
   }
 }
 
@@ -139,6 +183,11 @@ export const handleAuthRedirect = async (url) => {
     return { session: null, error: null }
   } catch (err) {
     console.error('Unexpected error handling redirect:', err)
-    return { session: null, error: err }
+    return { 
+      session: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred handling redirect'
+      }
+    }
   }
 }

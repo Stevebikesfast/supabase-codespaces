@@ -77,12 +77,26 @@ function showError(message) {
 
 function updateAssistantCards(isAuthenticated) {
   assistantCards.forEach((card, index) => {
-    if (index === 0 || isAuthenticated) {
+    if (index === 0) {
+      // James is always unlocked
       card.classList.remove('locked');
+      card.addEventListener('click', () => handleAssistantClick(card.dataset.assistant));
     } else {
-      card.classList.add('locked');
+      if (isAuthenticated) {
+        card.classList.remove('locked');
+        card.addEventListener('click', () => handleAssistantClick(card.dataset.assistant));
+      } else {
+        card.classList.add('locked');
+        card.addEventListener('click', () => showAuthForm(true));
+      }
     }
   });
+}
+
+function handleAssistantClick(assistantId) {
+  console.log(`Selected assistant: ${assistantId}`);
+  // TODO: Implement assistant-specific functionality
+  alert(`${assistantId.charAt(0).toUpperCase() + assistantId.slice(1)} is ready to help!`);
 }
 
 // Event Listeners
@@ -133,3 +147,20 @@ signoutBtn.addEventListener('click', async () => {
 
 // Initialize the popup
 init();
+
+// Add click handlers for assistants immediately
+assistantCards.forEach((card, index) => {
+  if (index === 0) {
+    // James is always clickable
+    card.addEventListener('click', () => handleAssistantClick(card.dataset.assistant));
+  } else {
+    // Other assistants require auth
+    card.addEventListener('click', () => {
+      if (currentUser) {
+        handleAssistantClick(card.dataset.assistant);
+      } else {
+        showAuthForm(true);
+      }
+    });
+  }
+});
