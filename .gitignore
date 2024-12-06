@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+chrome-extension/node_modules/
+package-lock.json
+chrome-extension/package-lock.json
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+
+# Build files
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test files
+chrome-extension/testAuth.js
+chrome-extension/testEmail.js
+chrome-extension/testSupabase.js
+chrome-extension/testUserTable.js
+chrome-extension/checkTables.js
+chrome-extension/checkAuthPolicies.js
+chrome-extension/createUsersTable.js
+chrome-extension/setupAuth.js
+chrome-extension/setupRLS.js
+chrome-extension/verifyAuthSystem.js

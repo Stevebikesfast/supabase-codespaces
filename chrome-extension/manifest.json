@@ -1,29 +1,31 @@
 {
   "manifest_version": 3,
-  "name": "AI Assistants",
-  "version": "1.0",
-  "description": "Expert AI Assistants for Chrome Extension Development",
+  "name": "AI Assistant Extension",
+  "version": "1.0.0",
+  "description": "Chrome extension providing access to AI assistants for various tasks",
   "permissions": [
-    "storage",
-    "clipboardWrite"
+    "identity",
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
-    "https://gfahskcoysrpfkjcyrpu.supabase.co/*",
-    "https://api.openai.com/*"
+    "https://*.supabase.co/*",
+    "https://cfieicihcnkackalakpoceehceollknm.chromiumapp.org/*"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "128": "icons/icon.svg"
+      "16": "icons/icon16.png"
     }
   },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon.svg",
     "128": "icons/icon.svg"
   },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://gfahskcoysrpfkjcyrpu.supabase.co https://api.openai.com;"
-  }
+  "key": "cfieicihcnkackalakpoceehceollknm"
 }
