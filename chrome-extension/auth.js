@@ -4,20 +4,34 @@ import { supabase } from './supabaseClient.js'
 // Sign up a new user
 export const signUp = async (email, password) => {
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `https://${chrome.runtime.id}.chromiumapp.org/`,
-        data: {
-          extension_id: chrome.runtime.id
+    const response = await fetch(`${supabase.supabaseUrl}/auth/v1/signup`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabase.supabaseKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `https://${chrome.runtime.id}.chromiumapp.org/`,
+          data: {
+            extension_id: chrome.runtime.id
+          }
         }
-      }
-    })
+      })
+    });
 
-    if (error) {
-      console.error('Error signing up:', error.message)
-      return { user: null, error }
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Error signing up:', data.error?.message || data.msg);
+      return { 
+        user: null, 
+        error: { 
+          message: data.error?.message || data.msg || 'Failed to sign up'
+        }
+      };
     }
 
     return { 
@@ -26,109 +40,143 @@ export const signUp = async (email, password) => {
       message: data.user?.confirmation_sent_at 
         ? 'Please check your email for confirmation link'
         : 'Signup successful'
-    }
+    };
   } catch (err) {
-    console.error('Unexpected error during sign up:', err)
-    return { user: null, error: err }
+    console.error('Unexpected error during sign up:', err);
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signup'
+      }
+    };
   }
 }
 
 // Sign in an existing user
 export const signIn = async (email, password) => {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+    const response = await fetch(`${supabase.supabaseUrl}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabase.supabaseKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-    if (error) {
-      console.error('Error signing in:', error.message)
-      return { user: null, error }
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Error signing in:', data.error?.message || data.msg);
+      return { 
+        user: null, 
+        error: { 
+          message: data.error?.message || data.msg || 'Failed to sign in'
+        }
+      };
     }
 
-    return { user: data.user, error: null }
+    return { user: data.user, error: null };
   } catch (err) {
-    console.error('Unexpected error during sign in:', err)
-    return { user: null, error: err }
+    console.error('Unexpected error during sign in:', err);
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signin'
+      }
+    };
   }
 }
 
 // Get current user with session check
 export const getUser = async () => {
   try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    if (sessionError) {
-      return { user: null, error: sessionError }
+    const response = await fetch(`${supabase.supabaseUrl}/auth/v1/user`, {
+      headers: {
+        'apikey': supabase.supabaseKey,
+        'Authorization': `Bearer ${localStorage.getItem('supabase.auth.token')}`
+      }
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      return { user: null, error: null }; // Not signed in
     }
 
-    if (!session) {
-      return { user: null, error: null }
-    }
-
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    if (userError) {
-      return { user: null, error: userError }
-    }
-
-    return { user, error: null }
+    return { user: data, error: null };
   } catch (err) {
-    console.error('Unexpected error getting user:', err)
-    return { user: null, error: err }
+    console.error('Unexpected error getting user:', err);
+    return { 
+      user: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred getting user'
+      }
+    };
   }
 }
 
 // Sign out current user
 export const signOut = async () => {
   try {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error('Error signing out:', error.message)
-      return { error }
+    const response = await fetch(`${supabase.supabaseUrl}/auth/v1/logout`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabase.supabaseKey,
+        'Authorization': `Bearer ${localStorage.getItem('supabase.auth.token')}`
+      }
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      console.error('Error signing out:', data.error?.message || data.msg);
+      return { 
+        error: { 
+          message: data.error?.message || data.msg || 'Failed to sign out'
+        }
+      };
     }
-    return { error: null }
+
+    localStorage.removeItem('supabase.auth.token');
+    return { error: null };
   } catch (err) {
-    console.error('Unexpected error during sign out:', err)
-    return { error: err }
+    console.error('Unexpected error during sign out:', err);
+    return { 
+      error: { 
+        message: err.message || 'An unexpected error occurred during signout'
+      }
+    };
   }
 }
 
 // Handle auth redirect for Chrome extension
 export const handleAuthRedirect = async (url) => {
   try {
-    // Extract hash or query parameters from URL
-    const params = new URLSearchParams(url.split('#')[1] || url.split('?')[1])
+    const params = new URLSearchParams(url.split('#')[1] || url.split('?')[1]);
     
-    // If we have an access token, set the session
     if (params.has('access_token')) {
-      const { data: { session }, error } = await supabase.auth.setSession({
-        access_token: params.get('access_token'),
-        refresh_token: params.get('refresh_token')
-      })
-
+      localStorage.setItem('supabase.auth.token', params.get('access_token'));
+      const { user, error } = await getUser();
+      
       if (error) {
-        console.error('Error setting session:', error.message)
-        return { session: null, error }
+        console.error('Error getting user after redirect:', error);
+        return { session: null, error };
       }
 
-      return { session, error: null }
+      return { 
+        session: { user, access_token: params.get('access_token') }, 
+        error: null 
+      };
     }
 
-    // Otherwise check current session
-    const { data: { session }, error } = await supabase.auth.getSession()
-    
-    if (error) {
-      console.error('Error handling redirect:', error.message)
-      return { session: null, error }
-    }
-
-    if (session) {
-      console.log('User authenticated:', session.user)
-      return { session, error: null }
-    }
-
-    return { session: null, error: null }
+    return { session: null, error: null };
   } catch (err) {
-    console.error('Unexpected error handling redirect:', err)
-    return { session: null, error: err }
+    console.error('Unexpected error handling redirect:', err);
+    return { 
+      session: null, 
+      error: { 
+        message: err.message || 'An unexpected error occurred handling redirect'
+      }
+    };
   }
 }

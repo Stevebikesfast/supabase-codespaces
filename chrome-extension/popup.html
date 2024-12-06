@@ -14,6 +14,10 @@
       max-width: 100%;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     .auth-section {
       text-align: right;
       margin-bottom: 20px;
@@ -135,6 +139,59 @@
     .error-message.show {
       display: block;
     }
+
+    /* Profile View Styles */
+    #profile-view {
+      padding: 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    #profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+
+    .profile-info {
+      flex-grow: 1;
+    }
+
+    #profile-name {
+      font-size: 24px;
+      margin: 0 0 5px 0;
+    }
+
+    #profile-title {
+      color: #666;
+      margin: 0 0 10px 0;
+    }
+
+    #profile-bio {
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .back-button {
+      margin-bottom: 20px;
+    }
+
+    /* Work Interface Styles */
+    #work-interface {
+      padding: 20px;
+    }
+
+    .task-description {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -165,48 +222,70 @@
       <div id="error-message" class="error-message"></div>
     </div>
 
-    <div class="assistants-grid">
-      <div class="assistant-card" data-assistant="james">
-        <img src="Assistant-Profile/james-morrison.png" alt="James Morrison" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">James Morrison</h3>
-          <p class="assistant-title">Extension Monetization Strategist</p>
+    <div id="assistants-view">
+      <div class="assistants-grid">
+        <div class="assistant-card" data-assistant="james">
+          <img src="Assistant-Profile/james-morrison.png" alt="James Morrison" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">James Morrison</h3>
+            <p class="assistant-title">Extension Monetization Strategist</p>
+          </div>
+        </div>
+        <div class="assistant-card locked" data-assistant="sarah">
+          <img src="Assistant-Profile/dr-sarah-peterson.png" alt="Dr. Sarah Peterson" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">Dr. Sarah Peterson</h3>
+            <p class="assistant-title">Extension Architecture Specialist</p>
+          </div>
+        </div>
+        <div class="assistant-card locked" data-assistant="maya">
+          <img src="Assistant-Profile/dr-maya-patel.png" alt="Dr. Maya Patel" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">Dr. Maya Patel</h3>
+            <p class="assistant-title">AI Integration Architect</p>
+          </div>
+        </div>
+        <div class="assistant-card locked" data-assistant="alex">
+          <img src="Assistant-Profile/alex-chen.png" alt="Alex Chen" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">Alex Chen</h3>
+            <p class="assistant-title">Visual Design Architect</p>
+          </div>
+        </div>
+        <div class="assistant-card locked" data-assistant="david">
+          <img src="Assistant-Profile/david-kumar.png" alt="David Kumar" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">David Kumar</h3>
+            <p class="assistant-title">Extension Project & QA Engineer</p>
+          </div>
+        </div>
+        <div class="assistant-card locked" data-assistant="marcus">
+          <img src="Assistant-Profile/marcus-thompson.png" alt="Marcus Thompson" class="profile-pic">
+          <div class="assistant-info">
+            <h3 class="assistant-name">Marcus Thompson</h3>
+            <p class="assistant-title">Chrome Store Launch Strategist</p>
+          </div>
         </div>
       </div>
-      <div class="assistant-card locked" data-assistant="sarah">
-        <img src="Assistant-Profile/dr-sarah-peterson.png" alt="Dr. Sarah Peterson" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">Dr. Sarah Peterson</h3>
-          <p class="assistant-title">Extension Architecture Specialist</p>
+    </div>
+
+    <div id="profile-view" class="hidden">
+      <button id="back-to-assistants" class="back-button">← Back to Assistants</button>
+      <div class="profile-header">
+        <img id="profile-image" src="" alt="Assistant Profile">
+        <div class="profile-info">
+          <h2 id="profile-name"></h2>
+          <h3 id="profile-title"></h3>
+          <p id="profile-bio"></p>
         </div>
       </div>
-      <div class="assistant-card locked" data-assistant="maya">
-        <img src="Assistant-Profile/dr-maya-patel.png" alt="Dr. Maya Patel" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">Dr. Maya Patel</h3>
-          <p class="assistant-title">AI Integration Architect</p>
-        </div>
-      </div>
-      <div class="assistant-card locked" data-assistant="alex">
-        <img src="Assistant-Profile/alex-chen.png" alt="Alex Chen" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">Alex Chen</h3>
-          <p class="assistant-title">Visual Design Architect</p>
-        </div>
-      </div>
-      <div class="assistant-card locked" data-assistant="david">
-        <img src="Assistant-Profile/david-kumar.png" alt="David Kumar" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">David Kumar</h3>
-          <p class="assistant-title">Extension Project & QA Engineer</p>
-        </div>
-      </div>
-      <div class="assistant-card locked" data-assistant="marcus">
-        <img src="Assistant-Profile/marcus-thompson.png" alt="Marcus Thompson" class="profile-pic">
-        <div class="assistant-info">
-          <h3 class="assistant-name">Marcus Thompson</h3>
-          <p class="assistant-title">Chrome Store Launch Strategist</p>
-        </div>
+    </div>
+
+    <div id="work-interface" class="hidden">
+      <button id="back-to-tasks" class="back-button">← Back to Tasks</button>
+      <h2 id="task-title"></h2>
+      <div class="task-description">
+        <p class="task-description-text"></p>
       </div>
     </div>
   </div>
