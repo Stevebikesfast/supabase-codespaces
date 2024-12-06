@@ -5,8 +5,8 @@
   "description": "Chrome extension providing access to AI assistants for various tasks",
   "permissions": [
     "identity",
-    "tabs",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "https://*.supabase.co/*",
@@ -29,5 +29,7 @@
     "48": "icons/icon.svg",
     "128": "icons/icon.svg"
   },
-  "key": "cfieicihcnkackalakpoceehceollknm"
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }
